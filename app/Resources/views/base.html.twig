@@ -17,6 +17,7 @@
 
     <!-- Custom styles for this template -->
     <link href="{{ asset('css/jumbotron-narrow.css')}}" rel="stylesheet">
+    <link href="{{ asset('css/main.css')}}">
     {% block stylesheets %}
     {% endblock stylesheets %}
 
@@ -26,14 +27,14 @@
 
     <div class="container">
       <div class="header clearfix">
-        <nav>
+        <nav style = "font-size: 28px;">
           <ul class="nav nav-pills pull-right">
-            <li role="presentation" class="active"><a href="#">Home</a></li>
-            <li role="presentation"><a href="#">About</a></li>
-            <li role="presentation"><a href="#">Contact</a></li>
+            <li  style = "font-size: 20px;" role="presentation" class="active"><a href="{{ path('homepage')}}">Inicio</a></li>
+            <li  style = "font-size: 20px;" role="presentation"><a href="#">Ingreso datos</a></li>
+            <li  style = "font-size: 20px;" role="presentation"><a href="#">Consultas</a></li>
           </ul>
         </nav>
-        <h3 class="text-muted">CRM</h3>
+        <a href="{{ path('homepage')}}"><h3 class="text-muted">CRM</h3></a>
       </div>
       {% block body %}
      

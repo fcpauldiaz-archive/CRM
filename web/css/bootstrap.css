@@ -3751,6 +3751,7 @@ tbody.collapse.in {
 }
 .dropup .btn-lg .caret {
   border-width: 0 5px 5px;
+   font-size: 48px !important;
 }
 .btn-group-vertical > .btn,
 .btn-group-vertical > .btn-group,
@@ -6787,6 +6788,7 @@ button.close {
 }
 .btn-lg {
   line-height: 26px;
+  font-size: 30px !important;
 }
 .btn-default:hover {
   background-color: #393a35;
