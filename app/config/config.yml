@@ -69,7 +69,16 @@ doctrine:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
-
+        
+doctrine_mongodb:
+    connections:
+        default:
+            server: mongodb://localhost:27017
+            options: {}
+    default_database: test_database
+    document_managers:
+        default:
+            auto_mapping: true
 # Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"
@@ -83,3 +92,10 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: UserBundle\Entity\Usuario
+
+
+endroid_twitter:
+    consumer_key: "ADcfgE61LTgs6YU524t9yrU29"
+    consumer_secret: "Z7oggnEwWq4mdOj0oapaH9rteMzURlZFb61IkxEe024tjQrMFU"
+    access_token: "163336024-QxifqxVCZabZEF5AUCeaIQuGvAScfoQKz9MfQB5q"
+    access_token_secret: "ahkyVCn3l555jCH0joxhZuPikW5zHT6eyZ6Qq4043GkNz"

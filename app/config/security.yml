@@ -25,6 +25,7 @@ security:
             access_denied_url: /contact/access/exception
             #access_denied_handler: kernel.listener.accessDenied
             #entry_point: kernel.listener.accessDenied
+        
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
