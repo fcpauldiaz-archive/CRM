@@ -22,9 +22,8 @@ class AppKernel extends Kernel
 
             new FOS\UserBundle\FOSUserBundle(),
             new Endroid\Bundle\TwitterBundle\EndroidTwitterBundle(),
-          new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
-    
-          
+            new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
+            new MongoDBBundle\MongoDBBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
