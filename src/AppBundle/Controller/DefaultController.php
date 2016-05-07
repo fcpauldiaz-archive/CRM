@@ -13,7 +13,17 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-            $twitter = $this->get('endroid.twitter');
+        //$dm = $this->get('doctrine_mongodb')->getManager();
+      $client = new \MongoDB\Client("mongodb://localhost:27017");
+        $collection = $client->demo->beers;
+
+        $result = $collection->insertOne( [ 'name' => 'Hinterland', 'brewery' => 'BrewDog' ] );
+     
+
+       // $mongo = $connection->getMongoClient();
+
+       
+        $twitter = $this->get('endroid.twitter');
 
         // Retrieve the user's timeline
         $tweets = $twitter->getTimeline(array(
