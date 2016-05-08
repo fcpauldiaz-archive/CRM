@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new Endroid\Bundle\TwitterBundle\EndroidTwitterBundle(),
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new MongoDBBundle\MongoDBBundle(),
+            new ClientBundle\ClientBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

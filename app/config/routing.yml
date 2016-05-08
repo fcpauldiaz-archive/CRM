@@ -1,3 +1,7 @@
+client:
+    resource: "@ClientBundle/Resources/config/routing.yml"
+    prefix:   /
+
 mongo_db:
     resource: "@MongoDBBundle/Controller/"
     type:     annotation
