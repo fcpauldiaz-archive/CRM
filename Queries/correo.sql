@@ -1,0 +1,7 @@
+CREATE SEQUENCE correo_id_seq INCREMENT BY 1 MINVALUE 1 START 1;
+CREATE TABLE correo (
+    id INT NOT NULL,
+    correoElectronico VARCHAR(50) NOT NULL,
+    PRIMARY KEY(id)
+);
+

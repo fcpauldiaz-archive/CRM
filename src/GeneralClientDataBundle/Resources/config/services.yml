@@ -1,0 +1,4 @@
+services:
+#    general_client_data.example:
+#        class: GeneralClientDataBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

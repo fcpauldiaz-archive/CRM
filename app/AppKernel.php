@@ -25,6 +25,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new MongoDBBundle\MongoDBBundle(),
             new ClientBundle\ClientBundle(),
+            new GeneralClientDataBundle\GeneralClientDataBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

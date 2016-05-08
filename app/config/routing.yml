@@ -1,3 +1,7 @@
+general_client_data:
+    resource: "@GeneralClientDataBundle/Resources/config/routing.yml"
+    prefix:   /
+
 client:
     resource: "@ClientBundle/Resources/config/routing.yml"
     prefix:   /

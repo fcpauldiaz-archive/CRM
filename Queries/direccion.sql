@@ -1,0 +1,7 @@
+CREATE SEQUENCE direccion_id_seq INCREMENT BY 1 MINVALUE 1 START 1;
+CREATE TABLE direccion (
+    id INT NOT NULL,
+    direccion VARCHAR(75) NOT NULL,
+    PRIMARY KEY(id)
+);
+
