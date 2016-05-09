@@ -101,6 +101,9 @@ class Client
      */
     private $nacionalidad;
 
+    /**
+     * @ORM\OneToMany(targetEntity="GeneralClientDataBundle\Entity\Direccion", mappedBy="cliente")
+     */
     private $direccion;
 
     /**
@@ -123,6 +126,7 @@ class Client
     {
         $this->correo = new ArrayCollection();
         $this->telefono = new ArrayCollection();
+        $this->direccion = new ArrayCollection();
     }
 
     /**

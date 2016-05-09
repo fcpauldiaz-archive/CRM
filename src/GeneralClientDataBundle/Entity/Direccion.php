@@ -4,6 +4,8 @@ namespace GeneralClientDataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use ClientBundle\Entity\Cliente as ClienteEntity;
+
 /**
  * Direccion
  *
@@ -28,6 +30,11 @@ class Direccion
      */
     private $direccion;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="ClientBundle\Entity\Client", inversedBy="correo")
+     * @ORM\JoinColumn(name="cliente_id", referencedColumnName="id")
+     */
+    private $cliente;
 
     /**
      * Get id
@@ -61,6 +68,18 @@ class Direccion
     public function getDireccion()
     {
         return $this->direccion;
+    }
+
+    public function setCliente(ClienteEntity $cliente)
+    {
+        $this->cliente = $cliente;
+
+        return $this;
+    }
+
+    public function getCliente()
+    {
+        return $this->cliente;
     }
 }
 
