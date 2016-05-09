@@ -75,7 +75,7 @@ doctrine_mongodb:
         default:
             server: mongodb://localhost:27017
             options: {}
-    default_database: pasteles2
+    default_database: crm
     document_managers:
         default:
             auto_mapping: true
@@ -92,6 +92,8 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: UserBundle\Entity\Usuario
+    service:
+        user_manager: custom_user_manager_id
 
 
 endroid_twitter:
@@ -99,3 +101,22 @@ endroid_twitter:
     consumer_secret: "Z7oggnEwWq4mdOj0oapaH9rteMzURlZFb61IkxEe024tjQrMFU"
     access_token: "163336024-QxifqxVCZabZEF5AUCeaIQuGvAScfoQKz9MfQB5q"
     access_token_secret: "ahkyVCn3l555jCH0joxhZuPikW5zHT6eyZ6Qq4043GkNz"
+
+hwi_oauth:
+    connect:
+        confirmation: true
+        account_connector: my_user_provider
+    # list of names of the firewalls in which this bundle is active, this setting MUST be set
+    firewall_names: [main]
+    fosub:
+        username_iterations: 30
+        properties:
+            # these properties will be used/redefined later in the custom FOSUBUserProvider service.
+            twitter: twitter_id
+    resource_owners:
+        twitter:
+            type:                twitter
+            client_id:           "ADcfgE61LTgs6YU524t9yrU29"
+            client_secret:       "Z7oggnEwWq4mdOj0oapaH9rteMzURlZFb61IkxEe024tjQrMFU"
+            options:
+                include_email: true

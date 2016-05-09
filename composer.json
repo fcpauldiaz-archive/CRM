@@ -23,7 +23,8 @@
         "fcpauldiaz/mongodb": "^1.3",
         "fcpauldiaz/mongodb-odm": "^1.0",
         "fcpauldiaz/mongodb-odm-bundle": "^3.1",
-        "mongodb/mongodb": "^1.0.0"
+        "mongodb/mongodb": "^1.0.0",
+        "hwi/oauth-bundle": "^0.4.1"
      
 
     },

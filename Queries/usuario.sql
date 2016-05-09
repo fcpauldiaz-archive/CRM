@@ -16,6 +16,9 @@ CREATE TABLE usuario (
 		roles TEXT NOT NULL, 
 		credentials_expired BOOLEAN NOT NULL, 
 		credentials_expire_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, 
+		twitter_id TEXT DEFAULT NULL,
+		twitter_token TEXT DEFAULT NULL,
+		twitter_secret_token TEXT DEFAULT NULL,
 		PRIMARY KEY(id)
 );
 

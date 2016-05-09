@@ -3,7 +3,7 @@
  <div class="jumbotron">
         <h1>Jumbotron heading</h1>
         <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-        <a class="btn btn-lg btn-success btn-xl" href="#">Iniciar sesión</a> <a class="btn btn-lg btn-success" href="#" role="button">Crear usuario</a>
+        <a class="btn btn-lg btn-success btn-xl" href="{{ path('fos_user_security_login')}}">Iniciar sesión</a> <a class="btn btn-lg btn-success" href="{{ path('fos_user_registration_register')}}" role="button">Crear usuario</a>
         
       </div>
 
@@ -13,7 +13,7 @@
           <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
 
           <h4>Subheading</h4>
-          <p>{{dump(tweets)}}</p>
+         
 
           <h4>Subheading</h4>
           <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
