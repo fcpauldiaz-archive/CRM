@@ -14,3 +14,9 @@ CREATE TABLE client (
     nacionalidad VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY(id)
 );
+
+ALTER TABLE client ADD tipo_membresia_id INT DEFAULT NULL;
+ALTER TABLE client ADD CONSTRAINT FK_C74404553D81FAA9 FOREIGN KEY (tipo_membresia_id)
+    REFERENCES tipo_membresia (id) NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+CREATE INDEX IDX_C74404553D81FAA9 ON client (tipo_membresia_id);

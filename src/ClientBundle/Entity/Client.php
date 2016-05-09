@@ -3,6 +3,9 @@
 namespace ClientBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use GeneralClientDataBundle\Entity\TipoMembresia as TipoMembresiaEntity;
 
 /**
  * Client
@@ -98,6 +101,29 @@ class Client
      */
     private $nacionalidad;
 
+    private $direccion;
+
+    /**
+     * @ORM\OneToMany(targetEntity="GeneralClientDataBundle\Entity\Correo", mappedBy="cliente")
+     */
+    private $correo;
+
+    /**
+     * @ORM\OneToMany(targetEntity="GeneralClientDataBundle\Entity\Telefono", mappedBy="cliente")
+     */
+    private $telefono;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="GeneralClientDataBundle\Entity\TipoMembresia", inversedBy="clientes")
+     * @ORM\JoinColumn(name="tipo_membresia_id", referencedColumnName="id")
+     */
+    private $tipoMembresia;
+
+    public function __construct()
+    {
+        $this->correo = new ArrayCollection();
+        $this->telefono = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -371,6 +397,18 @@ class Client
     public function getNacionalidad()
     {
         return $this->nacionalidad;
+    }
+
+    public function setTipoMembresia(TipoMembresiaEntity $tipoMembresia)
+    {
+        $this->tipoMembresia = $tipoMembresia;
+
+        return $this;
+    }
+
+    public function getTipoMembresia()
+    {
+        return $this->tipoMembresia;
     }
 }
 

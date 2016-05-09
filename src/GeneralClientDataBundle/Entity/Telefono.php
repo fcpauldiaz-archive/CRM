@@ -28,6 +28,11 @@ class Telefono
      */
     private $numeroTelefono;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="ClientBundle\Entity\Client", inversedBy="correo")
+     * @ORM\JoinColumn(name="cliente_id", referencedColumnName="id")
+     */
+    private $cliente;
 
     /**
      * Get id
@@ -61,6 +66,18 @@ class Telefono
     public function getNumeroTelefono()
     {
         return $this->numeroTelefono;
+    }
+
+    public function setCliente(ClienteEntity $cliente)
+    {
+        $this->cliente = $cliente;
+
+        return $this;
+    }
+
+    public function getCliente()
+    {
+        return $this->cliente;
     }
 }
 

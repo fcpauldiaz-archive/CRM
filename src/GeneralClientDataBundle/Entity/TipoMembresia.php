@@ -3,6 +3,7 @@
 namespace GeneralClientDataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * TipoMembresia
@@ -28,6 +29,15 @@ class TipoMembresia
      */
     private $tipoMembresia;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ClientBundle\Entity\Client", mappedBy="tipoMembresia")
+     */
+    private $clientes;
+
+    public function __construct()
+    {
+        $this->clientes = new ArrayCollection();
+    }
 
     /**
      * Get id

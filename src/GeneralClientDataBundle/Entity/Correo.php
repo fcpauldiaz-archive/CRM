@@ -28,6 +28,11 @@ class Correo
      */
     private $correoElectronico;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="ClientBundle\Entity\Client", inversedBy="correo")
+     * @ORM\JoinColumn(name="cliente_id", referencedColumnName="id")
+     */
+    private $cliente;
 
     /**
      * Get id
@@ -61,6 +66,18 @@ class Correo
     public function getCorreoElectronico()
     {
         return $this->correoElectronico;
+    }
+
+    public function setCliente(ClienteEntity $cliente)
+    {
+        $this->cliente = $cliente;
+
+        return $this;
+    }
+
+    public function getCliente()
+    {
+        return $this->cliente;
     }
 }
 
