@@ -41,14 +41,6 @@ class DefaultController extends Controller
 		    'count' => 5
 		));
         return $this->render('MongoDBBundle:Default:showTweets.html.twig', array(
-            'array_tokens' => 
-            [
-            		$usuario->getTwitterToken(),
-            		$usuario->getTokenScret(),
-            		"163336024-QxifqxVCZabZEF5AUCeaIQuGvAScfoQKz9MfQB5q",
-            		"ahkyVCn3l555jCH0joxhZuPikW5zHT6eyZ6Qq4043GkNz"
-
-            ],
             'tweets' => $tweets,
 
         ));

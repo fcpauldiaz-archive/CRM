@@ -24,21 +24,6 @@ CREATE TABLE usuario (
 
 CREATE SEQUENCE usuario_id_seq;
 
-CREATE OR REPLACE FUNCTION auto_increment()
- RETURNS "trigger" AS
- $$	
- BEGIN
-   New.id:=currval('usuario_id_seq');
-   Return NEW;
- END;
- $$ LANGUAGE plpgsql;
-
-CREATE TRIGGER usuario_trigger 
-BEFORE INSERT
-ON usuario
-FOR EACH ROW
-EXECUTE PROCEDURE auto_increment();
-
 CREATE UNIQUE INDEX INDEX_1 ON usuario (username_canonical);
 
 CREATE UNIQUE INDEX INDEX_2 ON usuario (email_canonical);
