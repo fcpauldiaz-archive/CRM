@@ -1,7 +1,7 @@
 CREATE SEQUENCE telefono_id_seq INCREMENT BY 1 MINVALUE 1 START 1;
 CREATE TABLE telefono (
     id INT NOT NULL,
-    numeroTelefono VARCHAR(9) NOT NULL,
+    numeroTelefono VARCHAR(14) NOT NULL,
     PRIMARY KEY(id)
 );
 
