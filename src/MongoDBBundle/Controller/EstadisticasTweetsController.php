@@ -102,7 +102,7 @@ class EstadisticasTweetsController extends Controller
 		foreach ($tweets as $tweet) {
 			$tags = $tweet->entities->hashtags;
 			foreach($tags as $tag) {
-				if (!in_array($tag, $hashtags)){
+				if (!in_array($tag->text, $hashtags)){
 					$hashtags[] = $tag->text;
 				}
 			}
