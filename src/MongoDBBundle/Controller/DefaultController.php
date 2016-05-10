@@ -5,9 +5,6 @@ namespace MongoDBBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use MongoDBBundle\Form\CantidadTweetsType;
-use Endroid\Twitter\Twitter;
-
 
 class DefaultController extends Controller
 {
@@ -18,28 +15,19 @@ class DefaultController extends Controller
     public function showTweetsAction()
     {
         
-        /*$twitter = $this->get('endroid.twitter');
+        $twitter = $this->get('endroid.twitter');
 
         // Retrieve the user's timeline
         $tweets = $twitter->getTimeline(array(
             'count' => 500,
-            'max_id' => 586242080827146240,
+            'screen_name' => 'kevinest2g',
         ));
-        $client = new \MongoDB\Client("mongodb://localhost:27017");
-        $collection = $client->crm->tweets;
+       
 
-       // $result = $collection->insertMany($tweets);
-        // replace this example code with whatever you need*/
-        $usuario = $this->getDoctrine()->getRepository('UserBundle:Usuario')->findOneById(1);
-        $twitter = new Twitter(
-        	"ADcfgE61LTgs6YU524t9yrU29", 
-        	"Z7oggnEwWq4mdOj0oapaH9rteMzURlZFb61IkxEe024tjQrMFU", 
-        	$usuario->getTwitterToken(), 
-        	$usuario->getTokenScret());
-      	// Retrieve the user's timeline
-		$tweets = $twitter->getTimeline(array(
-		    'count' => 5
-		));
+        // 
+        // replace this example code with whatever you need
+        /*$usuario = $this->getDoctrine()->getRepository('UserBundle:Usuario')->findOneById(1);*/
+       
         return $this->render('MongoDBBundle:Default:showTweets.html.twig', array(
             'tweets' => $tweets,
 

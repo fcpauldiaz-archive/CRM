@@ -5,6 +5,7 @@ namespace MongoDBBundle\Security;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Endroid\Twitter\Twitter;
 
 class MyFOSUBUserProvider extends BaseClass
 {
@@ -32,7 +33,80 @@ class MyFOSUBUserProvider extends BaseClass
         //custom setter.
         $user->setTokenSecret($response->getTokenSecret());
         $this->userManager->updateUser($user);
-        dump($response);
+        //obtener credenciales de twitter
+        $twitter = new Twitter(
+            "ADcfgE61LTgs6YU524t9yrU29", 
+            "Z7oggnEwWq4mdOj0oapaH9rteMzURlZFb61IkxEe024tjQrMFU", 
+            $user->getTwitterToken(), 
+            $user->getTokenScret());
+        // obtener tweets del usuario
+        // Twitter api retorna máximo 199 por request
+        // 3200 max en total
+        $cantidadMax = 2000;
+        $cantidadActual = 0;
+        $max_id = '';
+        $tweetsAcum = [];
+        while ($cantidadActual < $cantidadMax) {
+            if ($cantidadActual !=0 ){
+                $tweets = $twitter->getTimeline(array(
+                    'count' => 500,
+                    'max_id' => $max_id
+                ));
+            }else{
+                 $tweets = $twitter->getTimeline(array(
+                'count' => 500,
+            ));
+
+            }
+           
+            $cont = 0;
+            foreach ($tweets as $tweet) {
+                if ($cantidadActual != 0){
+                    if ($cont != 0){
+                        $tweetsAcum[] = $tweet;
+                    }
+                }else{
+                     $tweetsAcum[] = $tweet;
+                }
+
+                $cont = $cont + 1;
+            }
+            $cantidadActual = $cantidadActual + count($tweets);
+           
+            if (count($tweetsAcum) != 0) {
+                $max_id = $tweetsAcum[count($tweetsAcum)-1]->id_str;
+            }
+            else {
+               // break;
+            }
+
+            
+
+        } 
+
+       $tweets = $tweetsAcum;
+        //conectar con mongo
+        $client = new \MongoDB\Client("mongodb://localhost:27017");
+
+        $collection = $client->crm->tweets;
+        foreach($tweets as &$tweet) {
+            $date = new \DateTime($tweet->created_at);
+            //$date = $date->format(\DateTime::ISO8601);
+           
+            $time = $date->getTimestamp();
+            //$time = strval($time) + "000";
+            $time = $time."000";
+             
+            $utcdatetime = new \MongoDB\BSON\UTCDateTime($time);
+           
+           
+            $tweet->created_at = $utcdatetime;
+           
+        }
+        
+        //guardar los tweets
+        $result = $collection->insertMany($tweets);
+        
         
     }
     /**

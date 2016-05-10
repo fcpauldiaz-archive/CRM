@@ -1,12 +1,12 @@
 <?php
 
-namespace MongoDbBundle\Form;
+namespace MongoDBBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class CantidadTweetsType extends AbstractType
+class UpdateTweetsType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -15,14 +15,18 @@ class CantidadTweetsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('cantidad', 'number', [
-                'label' => 'Cantidad tweets',
-                'required' => true,
-            ])
-            ->add('submit', 'submit', [
-                'label' => 'Buscar',
+        ->add('usuario', 'entity', [
+                'class' => 'UserBundle:Usuario',
+                'label' => false,
+                'required' => false,
                 'attr' => [
-                    'class' => 'btn btn-primary btn-block',
+                    'class' => 'select2'
+                ]
+        ])
+        ->add('submit', 'submit', [
+                'label' => 'Actualizr',
+                'attr' => [
+                    'class' => 'btn btn-primary',
                 ],
 
             ])

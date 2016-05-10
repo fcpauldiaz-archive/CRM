@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="usuario")
+ * 
  */
 class Usuario extends BaseUser
 {
@@ -18,19 +18,10 @@ class Usuario extends BaseUser
      */
     protected $id;
 
-    /** 
-     *  @ORM\Column(name="twitter_token", type="string", length=255, nullable=true) 
-     */
     protected $twitterToken;
 
-     /** 
-      * @ORM\Column(name="twitter_id", type="string", length=255, nullable=true)
-      */
     protected $twitter_id;
 
-    /**
-     * @ORM\Column(name="twitter_secret_token", type="string", length=255, nullable=true)
-     */
     protected $twitterSecretToken;
 
     public function __construct()
