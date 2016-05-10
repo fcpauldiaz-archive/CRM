@@ -4,34 +4,12 @@ namespace GeneralClientDataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Telefono
- *
- * @ORM\Table()
- * @ORM\Entity
- */
 class Telefono
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="numeroTelefono", type="string", length=14)
-     */
     private $numeroTelefono;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="ClientBundle\Entity\Client", inversedBy="correo")
-     * @ORM\JoinColumn(name="cliente_id", referencedColumnName="id")
-     */
     private $cliente;
 
     /**

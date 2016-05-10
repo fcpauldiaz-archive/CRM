@@ -7,119 +7,38 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use GeneralClientDataBundle\Entity\TipoMembresia as TipoMembresiaEntity;
 
-/**
- * Client
- *
- * @ORM\Table(name="client")
- * @ORM\Entity
- */
 class Client
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="fechaNacimiento", type="string", length=255, nullable=true)
-     */
     private $fechaNacimiento;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nit", type="string", length=255)
-     */
     private $nit;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="frecuente", type="boolean", nullable=true)
-     */
     private $frecuente;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nombres", type="string", length=255)
-     */
     private $nombres;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="apellidos", type="string", length=255, nullable=true)
-     */
     private $apellidos;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="estadoCivil", type="string", length=255)
-     */
     private $estadoCivil;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="fotoCliente", type="string", length=255, nullable=true)
-     */
     private $fotoCliente;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="sexo", type="string", length=255, nullable=true)
-     */
     private $sexo;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="profesion", type="string", length=255, nullable=true)
-     */
     private $profesion;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="dpi", type="string", length=255, nullable=true)
-     */
     private $dpi;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="nacionalidad", type="string", length=255, nullable=true)
-     */
     private $nacionalidad;
 
-    /**
-     * @ORM\OneToMany(targetEntity="GeneralClientDataBundle\Entity\Direccion", mappedBy="cliente")
-     */
     private $direccion;
 
-    /**
-     * @ORM\OneToMany(targetEntity="GeneralClientDataBundle\Entity\Correo", mappedBy="cliente")
-     */
     private $correo;
 
-    /**
-     * @ORM\OneToMany(targetEntity="GeneralClientDataBundle\Entity\Telefono", mappedBy="cliente")
-     */
     private $telefono;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="GeneralClientDataBundle\Entity\TipoMembresia", inversedBy="clientes")
-     * @ORM\JoinColumn(name="tipo_membresia_id", referencedColumnName="id")
-     */
     private $tipoMembresia;
 
     public function __construct()
