@@ -35,8 +35,8 @@ class ConsultaTweetsController extends Controller
         $fechaFinal = $data['fechaFinal'];
         $imagen = $data['imagen'];
         $estadisticas = $data['estadisticas'];
-         //conectar con mongo
-      	$mongo = new \MongoDB\Driver\Manager("mongodb://localhost:27017");
+        
+      
       	$filter = [];
       	$filterUsuario = [];
       	$filterEst = [];
@@ -56,11 +56,8 @@ class ConsultaTweetsController extends Controller
 			$filterDate = [
 				'created_at' => 
 					[
-						
 						'$gte' => $utcFirst,
 						'$lte' => $utcSecond
-						
-						
 					]
 			];
 
@@ -82,29 +79,21 @@ class ConsultaTweetsController extends Controller
         		]
         	];
         }
+        //unir queries 
         $filter = array_merge($filter, $filterUsuario);
-        //$filter = array_merge($filter, $filterEst);
-        //$filter = array_merge($filter, $filterImg);
+        $filter = array_merge($filter, $filterEst);
+        $filter = array_merge($filter, $filterImg);
         $filter = array_merge($filter, $filterDate);
         $query = new \MongoDB\Driver\Query($filter);
+        //conectar con mongo
+        $mongo = new \MongoDB\Driver\Manager("mongodb://localhost:27017");
 		$rows = $mongo->executeQuery('crm.tweets', $query);
 
-		
-		$cantidad = 0;
 		foreach($rows as $r){
   			dump($r);
-  			$cantidad++;
+  			
 		}
 		
-		/* $client = new \MongoDB\Client("mongodb://localhost:27017");
-
-        $collection = $client->crm->tweets;
-        //guardar los tweets
-        $rows = $collection->find(['user.id_str' => $usuario->getTwitterId()]);
-       foreach($rows as $r){
-       		$json = \MongoDB\BSON\toJSON(\MongoDB\BSON\fromPHP($r));
-  			dump($json);
-		}*/
 		
 
 	}
