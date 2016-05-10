@@ -6,24 +6,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
-use MongoDBBundle\Form\ConsultaTweetsType;
+use MongoDBBundle\Form\ConsultaEstadisticasTweetsType;
 use Endroid\Twitter\Twitter;
 /**
- * @Route("/consulta/")
+ * @Route("/estadisticas/")
  */
-class ConsultaTweetsController extends Controller
+class EstadisticasTweetsController extends Controller
 {
 	/**
 	 * @Route("tweets")
-	 * 
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
 	 */
-	public function consultaTweetsAction(Request $request)
+	public function estadisticasTweetsAction(Request $request)
 	{
-		$form = $this->createForm(new ConsultaTweetsType());
+		$form = $this->createForm(new ConsultaEstadisticasTweetsType());
 		$form->handleRequest($request);
         if (!$form->isValid()) {
             return $this->render(
-                'MongoDBBundle:Default:consultaTweets.html.twig',
+                'MongoDBBundle:Default:estadisticasHashtag.html.twig',
                 [
                     'form' => $form->createView(),
                 ]
@@ -33,17 +34,15 @@ class ConsultaTweetsController extends Controller
         $usuario = $data['usuario'];
         $fechaInicial = $data['fechaInicial'];
         $fechaFinal = $data['fechaFinal'];
-        $imagen = $data['imagen'];
-        $estadisticas = $data['estadisticas'];
-        
-      
-      	$filter = [];
+        $hashtag = $data['hashtag'];
+        $idioma = $data['idioma'];
+        $fecha = $data['fecha'];
+        $menciones = $data['menciones'];
+
+        $filter = [];
       	$filterUsuario = [];
-      	$filterEst = [];
-      	$filterImg = [];
       	$filterDate = [];
-      
-      	if (isset($usuario)) {
+        if (isset($usuario)) {
 	      	$filterUsuario = [
 		      		'user.id_str' 
 		      			=> 	
@@ -65,30 +64,26 @@ class ConsultaTweetsController extends Controller
 						'$lte' => $utcSecond
 					]
 			];
-
-
       	}
-        if ($estadisticas == 0){
-        	$filterEst = [ 
-        		'$or' => [
-        			['retweet_count' => ['$gt' => 0]],
-        			['favorite_count' => ['$gt' => 0]]
-        		]
-        		
-        	];
-        }
-        if ($imagen == 1 ){
-        	$filterImg = [
-        		'entities.media' => [
-        			'$exists' => true
-        		]
-        	];
-        }
-        //unir queries 
-        $filter = array_merge($filter, $filterUsuario);
-        $filter = array_merge($filter, $filterEst);
-        $filter = array_merge($filter, $filterImg);
+
+      	//agrupar por hashtag
+      	if ($hashtag == 1) {
+      		$tweets = $this->queryTweetsHashTag($filter, $filterUsuario, $filterDate);
+      		return $this->agruparPorHashtag($tweets, $form);
+      	}
+      	dump('errp');
+
+	}
+	private function queryTweetsHashTag($filter, $filterUsuario, $filterDate){
+		$filter = array_merge($filter, $filterUsuario);
         $filter = array_merge($filter, $filterDate);
+
+        $filterHashtag = 
+    		[
+    			'$where' => 
+    			"this.entities.hashtags.length > 0"
+    		];
+        $filter = array_merge($filter, $filterHashtag);
         $query = new \MongoDB\Driver\Query($filter);
         //conectar con mongo
         $mongo = new \MongoDB\Driver\Manager("mongodb://localhost:27017");
@@ -96,18 +91,48 @@ class ConsultaTweetsController extends Controller
 		$tweets = [];
 		foreach($rows as $r){
 			$tweets[] = $r; 
-  			
-  			
+  		}
+		return $tweets;
+	}
+
+	private function agruparPorHashtag($tweets, $form){
+		dump(count($tweets));
+		$hashtags = [];
+		//encontrar todos los hashtags únicos
+		foreach ($tweets as $tweet) {
+			$tags = $tweet->entities->hashtags;
+			foreach($tags as $tag) {
+				if (!in_array($tag, $hashtags)){
+					$hashtags[] = $tag->text;
+				}
+			}
+
 		}
-		
-		 return $this->render(
-                'MongoDBBundle:Default:consultaTweets.html.twig',
-                [
-                	'tweets' => $tweets,
-                    'form' => $form->createView(),
-                ]
-            );
-		
+		//ahora contar la cantidad que se repite cada hashtag
+		$cantidadPorTag = [];
+		foreach($hashtags as $hashtag) {
+			$cant = 0;
+			foreach ($tweets as $tweet) {
+				$tags = $tweet->entities->hashtags;
+				foreach($tags as $tag) {
+					if ($hashtag == $tag->text){
+						$cant = $cant + 1;
+					}
+				}
+
+			}
+			$cantidadPorTag[] = $cant;
+		}
+		dump(($hashtags));
+		dump(($cantidadPorTag));
+		return $this->render('MongoDBBundle:Default:estadisticasHashtag.html.twig',
+			[
+				'data' => true,
+				'labels' => $hashtags,
+				'cantidades' => $cantidadPorTag,
+				'form' => $form->createView()
+			]
+		);
 
 	}
 

@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+	<h1>Estadísticas de Tweets</h1>
+
+	{{form_start(form)}}
+	 <div class="row">
+        <div class="col-md-6">
+        	<h4>Usuario</h4>
+            {{form_row(form.usuario)}}
+        </div>
+        <div class="col-md-6">
+            
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+
+            {{form_row(form.fechaInicial)}}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.fechaFinal)}}
+        </div>
+    </div>
+      <br>
+    <div class="row">
+        <div class="col-md-6">
+            {{form_row(form.hashtag)}}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.idioma)}}
+        </div>
+    </div>
+     <div class="row">
+        <div class="col-md-6">
+            {{form_row(form.fecha)}}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.menciones)}}
+        </div>
+    </div>
+
+    {{form_end(form)}}
+    {% if data is defined %}
+        <canvas id="tags" width="500" height="400"></canvas>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.2/Chart.min.js">
+       </script>
+        <script>
+        $(document).ready(function(){
+        var data = {
+            labels: {{ labels|json_encode|raw }},
+            datasets: [
+                {
+                    label: "Hashtags Stats",
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: "rgba(75,192,192,0.4)",
+                    borderColor: "rgba(75,192,192,1)",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: {{ cantidades|json_encode|raw }},
+                }
+            ]
+        };
+        var ctx = document.getElementById('tags').getContext('2d');
+           var myBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+               
+            });
+       });
+        </script>
+    {% endif %}
+
+{% endblock %}
