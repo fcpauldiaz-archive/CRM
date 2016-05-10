@@ -48,7 +48,7 @@ class ConsultaTweetsType extends AbstractType
                 ),
             // *this line is important*
             'choices_as_values' => true,
-            'label' => '¿Incluir estadísticas?',
+            'label' => '¿Incluir solo tweets con RT y FAV?',
             'required' => true,
         ])
         ->add('submit', 'submit', [

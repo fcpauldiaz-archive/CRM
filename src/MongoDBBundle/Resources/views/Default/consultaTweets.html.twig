@@ -53,7 +53,7 @@
         	{% set timestamp = tweet.created_at.toDateTime %}
 
         	<tr>
-        		<td>{{timestamp|date('d-m-Y')}}</td>
+        		<td>{{timestamp|date('Y-m-d')}}</td>
         		<td>{{tweet.text}}</td>
         		<td>
         			<ul>

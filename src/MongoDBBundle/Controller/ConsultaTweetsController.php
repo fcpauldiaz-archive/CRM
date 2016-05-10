@@ -42,8 +42,13 @@ class ConsultaTweetsController extends Controller
       	$filterEst = [];
       	$filterImg = [];
       	$filterDate = [];
+      
       	if (isset($usuario)) {
-      		$filterUsuario = ['user.id_str' => $usuario->getTwitterId()];
+      	$filterUsuario = [
+	      		'user.id_str' 
+	      			=> 	
+	      		$this->getTwitterId($usuario)
+      		];
       	}
       	if (isset($fechaInicial) && isset($fechaFinal)) {
       	
@@ -91,9 +96,10 @@ class ConsultaTweetsController extends Controller
 		$tweets = [];
 		foreach($rows as $r){
 			$tweets[] = $r; 
-  			dump($r);
+  			
   			
 		}
+		
 		 return $this->render(
                 'MongoDBBundle:Default:consultaTweets.html.twig',
                 [
@@ -103,5 +109,20 @@ class ConsultaTweetsController extends Controller
             );
 		
 
+	}
+
+	private function getTwitterId($usuario) {
+		$sql = " 
+            SELECT u.twitter_id
+            FROM usuario u
+            WHERE u.id = ?
+            ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $usuario->getId());
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+         return $res[0]["twitter_id"];
 	}
 }
