@@ -39,7 +39,7 @@ class ConsultaTweetsType extends AbstractType
             // *this line is important*
             'choices_as_values' => true,
             'label' => '¿Mostrar solo los tweets con multimedia?',
-            'required' => false,
+            'required' => true,
         ])
          ->add('estadisticas', 'choice', [
                 'choices'  => array(
@@ -49,7 +49,7 @@ class ConsultaTweetsType extends AbstractType
             // *this line is important*
             'choices_as_values' => true,
             'label' => '¿Incluir estadísticas?',
-            'required' => false,
+            'required' => true,
         ])
         ->add('submit', 'submit', [
                 'label' => 'Buscar',

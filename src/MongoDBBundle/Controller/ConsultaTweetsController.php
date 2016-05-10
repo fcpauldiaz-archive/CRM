@@ -88,12 +88,19 @@ class ConsultaTweetsController extends Controller
         //conectar con mongo
         $mongo = new \MongoDB\Driver\Manager("mongodb://localhost:27017");
 		$rows = $mongo->executeQuery('crm.tweets', $query);
-
+		$tweets = [];
 		foreach($rows as $r){
+			$tweets[] = $r; 
   			dump($r);
   			
 		}
-		
+		 return $this->render(
+                'MongoDBBundle:Default:consultaTweets.html.twig',
+                [
+                	'tweets' => $tweets,
+                    'form' => $form->createView(),
+                ]
+            );
 		
 
 	}

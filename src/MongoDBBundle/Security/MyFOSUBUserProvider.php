@@ -40,11 +40,51 @@ class MyFOSUBUserProvider extends BaseClass
             $user->getTwitterToken(), 
             $user->getTokenScret());
         // obtener tweets del usuario
-        // Twitter api retorna máximo 199
-        $tweets = $twitter->getTimeline(array(
-            'count' => 200
-        ));
+        // Twitter api retorna máximo 199 por request
+        // 3200 max en total
+        $cantidadMax = 2000;
+        $cantidadActual = 0;
+        $max_id = '';
+        $tweetsAcum = [];
+        while ($cantidadActual < $cantidadMax) {
+            if ($cantidadActual !=0 ){
+                $tweets = $twitter->getTimeline(array(
+                    'count' => 500,
+                    'max_id' => $max_id
+                ));
+            }else{
+                 $tweets = $twitter->getTimeline(array(
+                'count' => 500,
+            ));
 
+            }
+           
+            $cont = 0;
+            foreach ($tweets as $tweet) {
+                if ($cantidadActual != 0){
+                    if ($cont != 0){
+                        $tweetsAcum[] = $tweet;
+                    }
+                }else{
+                     $tweetsAcum[] = $tweet;
+                }
+
+                $cont = $cont + 1;
+            }
+            $cantidadActual = $cantidadActual + count($tweets);
+           
+            if (count($tweetsAcum) != 0) {
+                $max_id = $tweetsAcum[count($tweetsAcum)-1]->id_str;
+            }
+            else {
+               // break;
+            }
+
+            
+
+        } 
+
+       $tweets = $tweetsAcum;
         //conectar con mongo
         $client = new \MongoDB\Client("mongodb://localhost:27017");
 
@@ -52,7 +92,7 @@ class MyFOSUBUserProvider extends BaseClass
         foreach($tweets as &$tweet) {
             $date = new \DateTime($tweet->created_at);
             //$date = $date->format(\DateTime::ISO8601);
-            dump($date);
+           
             $time = $date->getTimestamp();
             //$time = strval($time) + "000";
             $time = $time."000";

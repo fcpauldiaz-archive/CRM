@@ -103,6 +103,8 @@ endroid_twitter:
     access_token_secret: "ahkyVCn3l555jCH0joxhZuPikW5zHT6eyZ6Qq4043GkNz"
 
 hwi_oauth:
+    http_client:
+        timeout: 20
     connect:
         confirmation: true
         account_connector: my_user_provider
