@@ -14,10 +14,10 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         //$dm = $this->get('doctrine_mongodb')->getManager();
-        $client = new \MongoDB\Client("mongodb://localhost:27017");
-        $collection = $client->demo->beers;
+        //$client = new \MongoDB\Client("mongodb://localhost:27017");
+        //$collection = $client->demo->beers;
 
-        $result = $collection->insertOne( [ 'name' => 'Hinterland', 'brewery' => 'BrewDog' ] );
+        //$result = $collection->insertOne( [ 'name' => 'Hinterland', 'brewery' => 'BrewDog' ] );
          
 
        // $mongo = $connection->getMongoClient();xxx

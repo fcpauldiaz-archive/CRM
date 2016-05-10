@@ -27,6 +27,7 @@ class AppKernel extends Kernel
             new ClientBundle\ClientBundle(),
             new GeneralClientDataBundle\GeneralClientDataBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
+            new Modulo1Bundle\Modulo1Bundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
