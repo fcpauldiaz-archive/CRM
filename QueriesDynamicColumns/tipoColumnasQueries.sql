@@ -1,0 +1,5 @@
+INSERT INTO tipo_columna VALUES (1, 'INTEGER');
+INSERT INTO tipo_columna VALUES (2, 'VARCHAR(50)');
+INSERT INTO tipo_columna VALUES (3, 'DOUBLE PRECISION');
+INSERT INTO tipo_columna VALUES (4, 'DATE');
+INSERT INTO tipo_columna VALUES (5, 'BOOLEAN');
