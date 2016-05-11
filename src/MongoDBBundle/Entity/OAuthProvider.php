@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 /*
  * Copyright (c) Tyler Sommer
@@ -81,3 +82,5 @@ class OAuthProvider implements AuthenticationProviderInterface
         return $token;
     }
 }
+=======
+>>>>>>> 3d62f20d849cfb019cf2c43e3df3483fdf878ea0

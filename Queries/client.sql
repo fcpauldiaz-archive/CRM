@@ -1,7 +1,7 @@
 CREATE SEQUENCE client_id_seq INCREMENT BY 1 MINVALUE 1 START 1;
 CREATE TABLE client (
     id INT NOT NULL,
-    fecha_nacimiento VARCHAR(255) DEFAULT NULL,
+    fecha_nacimiento DATE DEFAULT NULL,
     nit VARCHAR(10) NOT NULL,
     frecuente BOOLEAN DEFAULT NULL,
     nombres VARCHAR(255) NOT NULL,
@@ -24,4 +24,13 @@ ALTER TABLE client
     FOREIGN KEY (tipo_membresia_id)
     REFERENCES tipo_membresia (id);
 
+ALTER TABLE client
+    ADD usuario_id INT DEFAULT NULL;
+
+ALTER TABLE client
+    ADD CONSTRAINT FK_USUARIO_ID
+    FOREIGN KEY (usuario_id)
+    REFERENCES usuario (id);
+
 CREATE INDEX IDX_TIPO_MEMBRESIA ON client (tipo_membresia_id);
+CREATE INDEX IDX_USUARIO_ID ON client (usuario_id);

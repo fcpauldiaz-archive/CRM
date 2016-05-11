@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+	<h2>Clientes</h2>
+	<table class = "table table-striped table-hover">
+		<tr>
+		    <th>ID</th>
+		    <th>Fecha de nacimiento</th>
+		    <th>NIT</th>
+		    <th>Frecuente</th>
+		    <th>Nombres</th>
+		    <th>Apellidos</th>
+		    <th>Estado Civil</th>
+		    <th>Foto Cliente</th>
+		    <th>Sexo</th>
+		    <th>Profesion</th>
+		    <th>DPI</th>
+		    <th>Nacionalidad</th>
+		    <th>Tipo de membresia id</th>
+		{% for client in clients %}
+			<tr>
+				{% for campo in client%}
+					<td>{{campo}}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

@@ -35,8 +35,33 @@
         <nav style = "font-size: 28px;">
           <ul class="nav nav-pills pull-right">
             <li  style = "font-size: 20px;" role="presentation" class="active"><a href="{{ path('homepage')}}">Inicio</a></li>
-            <li  style = "font-size: 20px;" role="presentation"><a href="#">Ingreso datos</a></li>
-            <li  style = "font-size: 20px;" role="presentation"><a href="#">Consultas</a></li>
+             <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"  style = "font-size: 20px;" aria-expanded="false">Ingreso Datos SQL <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a style = "font-size: 20px;"  style = "font-size: 15px;"  href="#">Action</a></li>
+                <li><a  style = "font-size: 20px;" href="#">Another action</a></li>
+                <li><a  style = "font-size: 20px;" href="{{path('correo_new')}}">Crear Correos</a></li>
+              </ul>
+            </li>
+         
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"  style = "font-size: 20px;" aria-expanded="false">Consultas SQL <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a style = "font-size: 20px;"  style = "font-size: 15px;"  href="#">Action</a></li>
+                <li><a  style = "font-size: 20px;" href="#">Another action</a></li>
+                <li><a  style = "font-size: 20px;" href="{{path('correo')}}">Ver Correos</a></li>
+              </ul>
+            </li>
+              <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"  style = "font-size: 20px;" aria-expanded="false">Consultas MongoDB <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a  style = "font-size: 20px;"href="{{path('tweeter_query')}}">Consultas Detalle Twitter</a></li>
+                <li><a style = "font-size: 20px;" href="{{path('tweeter_stats')}}">Estadísticas Twitter</a></li>
+                <li><a  style = "font-size: 20px;" href="{{path('tweeter_query_resumen')}}">Consultas Resumen Twitter</a></li>
+                  <li><a  style = "font-size: 20px;" href="{{path('update_client_tweets')}}">Actualizar Tweets</a></li>
+             
+              </ul>
+            </li>
           </ul>
         </nav>
         <a href="{{ path('homepage')}}"><h3 class="text-muted">CRM</h3></a>

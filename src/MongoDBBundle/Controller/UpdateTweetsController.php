@@ -14,7 +14,7 @@ use MongoDBBundle\Form\UpdateTweetsType;
 class UpdateTweetsController extends Controller
 {
 	/**
-	 * @Route("usuario")
+	 * @Route("usuario", name="update_usuario_tweets")
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
@@ -47,9 +47,45 @@ class UpdateTweetsController extends Controller
 
 
 	}
+        /**
+     * @Route("cliente", name="update_client_tweets")
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function updateClientTweetsAction(Request $request)
+    {
+        $form = $this->createForm(new UpdateTweetsType($this->getDoctrine()->getManager()));
+        $form->handleRequest($request);
+        if (!$form->isValid()) {
+            return $this->render(
+                'MongoDBBundle:Default:actualizarTweets.html.twig',
+                [
+                    'form' => $form->createView(),
+                ]
+            );
+        }
+        $data = $form->getData();
+        $usuario = $data['cliente'];
 
-	private function guardarNuevosTweets($usuario) 
+        $bulk = new \MongoDB\Driver\BulkWrite(['ordered' => true]);
+        $bulk->delete(['user.screen_name' => $this->getTwitterUsername($usuario)]);
+
+        $manager = new \MongoDB\Driver\Manager('mongodb://localhost:27017');
+        //eliminar todos los tweets del usuario;
+        $result = $manager->executeBulkWrite('crm.tweets', $bulk);
+
+        $this->guardarNuevosTweets($usuario);
+
+
+        return $this->redirectToRoute('homepage');
+
+
+    }
+
+	private function guardarNuevosTweets($cliente) 
 	{
+        $usuario = $this->getUser();
+        
 		$twitter = new Twitter(
             "ADcfgE61LTgs6YU524t9yrU29", 
             "Z7oggnEwWq4mdOj0oapaH9rteMzURlZFb61IkxEe024tjQrMFU", 
@@ -58,7 +94,7 @@ class UpdateTweetsController extends Controller
         // obtener tweets del usuario
         // Twitter api retorna máximo 199 por request
         // 3200 max en total
-        $cantidadMax = 2000;
+        $cantidadMax = 1500;
         $cantidadActual = 0;
         $max_id = '';
         $tweetsAcum = [];
@@ -66,11 +102,13 @@ class UpdateTweetsController extends Controller
             if ($cantidadActual !=0 ){
                 $tweets = $twitter->getTimeline(array(
                     'count' => 500,
-                    'max_id' => $max_id
+                    'max_id' => $max_id,
+                    'screen_name' => $this->getTwitterUsername($cliente)
                 ));
             }else{
                  $tweets = $twitter->getTimeline(array(
                 'count' => 500,
+                'screen_name' => $this->getTwitterUsername($cliente)
             ));
 
             }
@@ -169,5 +207,20 @@ class UpdateTweetsController extends Controller
        
          return $res[0]["twitter_secret_token"];
 	}
+
+    private function getTwitterUsername($usuario) {
+        $sql = " 
+            SELECT u.twitter_username
+            FROM client u
+            WHERE u.id = ?
+            ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $usuario);
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+         return $res[0]["twitter_username"];
+    }
 
 }

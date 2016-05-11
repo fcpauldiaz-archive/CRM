@@ -24,7 +24,9 @@
         "fcpauldiaz/mongodb-odm": "^1.0",
         "fcpauldiaz/mongodb-odm-bundle": "^3.1",
         "mongodb/mongodb": "^1.0.0",
-        "hwi/oauth-bundle": "^0.4.1"
+        "hwi/oauth-bundle": "^0.4.1",
+        "braincrafted/bootstrap-bundle": "^2.2",
+        "oyejorge/less.php": "~1.5"
      
 
     },

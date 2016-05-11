@@ -3,11 +3,13 @@ modulo1:
     prefix:   /
 
 general_client_data:
-    resource: "@GeneralClientDataBundle/Resources/config/routing.yml"
+    resource: "@GeneralClientDataBundle/Controller/"
+    type:     annotation
     prefix:   /
 
 client:
-    resource: "@ClientBundle/Resources/config/routing.yml"
+    resource: "@ClientBundle/Controller/"
+    type: annotation
     prefix:   /
 
 mongo_db:

@@ -28,6 +28,7 @@ class AppKernel extends Kernel
             new GeneralClientDataBundle\GeneralClientDataBundle(),
             new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new Modulo1Bundle\Modulo1Bundle(),
+            new Braincrafted\Bundle\BootstrapBundle\BraincraftedBootstrapBundle()
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

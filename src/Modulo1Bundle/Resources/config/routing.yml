@@ -1,4 +1,10 @@
+
+client:
+    resource: "@Modulo1Bundle/Controller/"
+    type:     annotation
+
 modulo1_homepage:
     path:     /hello/{name}
     defaults: { _controller: Modulo1Bundle:Default:index }
+
 

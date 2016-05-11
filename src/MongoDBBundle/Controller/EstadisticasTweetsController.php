@@ -14,13 +14,13 @@ use Endroid\Twitter\Twitter;
 class EstadisticasTweetsController extends Controller
 {
 	/**
-	 * @Route("tweets")
+	 * @Route("tweets", name="tweeter_stats")
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
 	public function estadisticasTweetsAction(Request $request)
 	{
-		$form = $this->createForm(new ConsultaEstadisticasTweetsType());
+		$form = $this->createForm(new ConsultaEstadisticasTweetsType($this->getDoctrine()->getManager()));
 		$form->handleRequest($request);
         if (!$form->isValid()) {
             return $this->render(
@@ -45,9 +45,9 @@ class EstadisticasTweetsController extends Controller
       	$filterDate = [];
         if (isset($usuario)) {
 	      	$filterUsuario = [
-		      		'user.id_str' 
+		      		'user.screen_name' 
 		      			=> 	
-		      		$this->getTwitterId($usuario)
+		      		$this->getTwitterUsername($usuario)
 	      		];
       	}
       	if (isset($fechaInicial) && isset($fechaFinal)) {
@@ -329,19 +329,19 @@ class EstadisticasTweetsController extends Controller
 
 	}
 
-	private function getTwitterId($usuario) {
+	private function getTwitterUsername($usuario) {
 		$sql = " 
-            SELECT u.twitter_id
-            FROM usuario u
+            SELECT u.twitter_username
+            FROM client u
             WHERE u.id = ?
             ";
 
         $em = $this->getDoctrine()->getManager();
         $stmt = $em->getConnection()->prepare($sql);
-        $stmt->bindValue(1, $usuario->getId());
+        $stmt->bindValue(1, $usuario);
         $stmt->execute();
         $res = $stmt->fetchAll();
-         return $res[0]["twitter_id"];
+         return $res[0]["twitter_username"];
 	}
 	private function random_color_part() {
     return str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);

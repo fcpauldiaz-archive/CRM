@@ -2,8 +2,6 @@
 
 namespace GeneralClientDataBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 class Correo
 {
     private $id;
@@ -15,6 +13,11 @@ class Correo
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
