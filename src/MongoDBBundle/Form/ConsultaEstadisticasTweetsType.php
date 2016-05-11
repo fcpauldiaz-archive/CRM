@@ -47,24 +47,24 @@ class ConsultaEstadisticasTweetsType extends AbstractType
             'label' => '¿Agrupar por idioma?',
             'required' => true,
         ])
-        ->add('followers', 'choice', [
+        ->add('retweet', 'choice', [
                 'choices'  => array(
                     'No' => 0,
                     'Sí' => 1
                 ),
             // *this line is important*
             'choices_as_values' => true,
-            'label' => '¿Agrupar por followers?',
+            'label' => '¿Agrupar por RT por día?',
             'required' => true,
         ])
-        ->add('fecha', 'choice', [
+        ->add('cantidad', 'choice', [
                 'choices'  => array(
                     'No' => 0,
                     'Sí' => 1
                 ),
             // *this line is important*
             'choices_as_values' => true,
-            'label' => '¿Agrupar por fechas?',
+            'label' => '¿Agrupar tweets por cantidad?',
             'required' => true,
         ])
          ->add('menciones', 'choice', [

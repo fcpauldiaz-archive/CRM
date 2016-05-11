@@ -36,8 +36,9 @@ class EstadisticasTweetsController extends Controller
         $fechaFinal = $data['fechaFinal'];
         $hashtag = $data['hashtag'];
         $idioma = $data['idioma'];
-        $fecha = $data['fecha'];
+        $cantidad = $data['cantidad'];
         $menciones = $data['menciones'];
+        $retweet = $data['retweet'];
 
         $filter = [];
       	$filterUsuario = [];
@@ -76,6 +77,16 @@ class EstadisticasTweetsController extends Controller
        	return $this->agruparPorIdioma($tweets, $form);
        }
 
+       if ($cantidad == 1) {
+       		$tweets = $this->queryAllTweets($filter, $filterUsuario, $filterDate);
+       		return $this->agruparCantidadTweets($tweets, $form);
+       }
+
+       if ($menciones == 1) {
+       		$tweets = $this->queryAllTweets($filter, $filterUsuario, $filterDate);
+       		return $this->agruparPorCantidadMenciones($tweets, $form);
+       }
+
 	}
 
 	private function queryAllTweets($filter, $filterUsuario, $filterDate){
@@ -111,6 +122,72 @@ class EstadisticasTweetsController extends Controller
 			$tweets[] = $r; 
   		}
 		return $tweets;
+	}
+
+	private function agruparPorCantidadMenciones($tweets, $form)
+	{
+		$fechas = [];
+		foreach($tweets as $tweet) {
+			$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');;
+			
+			
+			if (!in_array($fechaActual, $fechas)){
+				if (count($tweet->entities->user_mentions)>0){
+					$fechas[] = $fechaActual;
+				}
+ 			}
+		}
+		$cantPorTweet = [];
+		foreach($fechas as $fecha) {
+			$cantidadMentions = 0;
+			foreach($tweets as $tweet) {
+				$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');
+				if ($fechaActual == $fecha){
+					$cantidadMentions += count($tweet->entities->user_mentions);
+	 			}
+			}
+			$cantPorTweet[] = $cantidadMentions;
+		}
+		
+		return $this->render('MongoDBBundle:Default:estadisticasCantidad.html.twig',
+			[
+				'data' => true,
+				'labels' => $fechas,
+				'cantidades' => $cantPorTweet,
+				'form' => $form->createView()
+			]
+		);
+	}
+	private function agruparCantidadTweets($tweets, $form){
+		$fechas = [];
+		foreach($tweets as $tweet) {
+			$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');;
+			
+			if (!in_array($fechaActual, $fechas)){
+				$fechas[] = $fechaActual;
+ 			}
+		}
+		$cantPorTweet = [];
+		foreach($fechas as $fecha) {
+			$cantTweets = 0;
+			foreach($tweets as $tweet) {
+				$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');
+				if ($fechaActual == $fecha){
+					$cantTweets = $cantTweets + 1;
+	 			}
+			}
+			$cantPorTweet[] = $cantTweets;
+		}
+		
+		return $this->render('MongoDBBundle:Default:estadisticasCantidad.html.twig',
+			[
+				'data' => true,
+				'labels' => $fechas,
+				'cantidades' => $cantPorTweet,
+				'form' => $form->createView()
+			]
+		);
+		
 	}
 
 	private function agruparPorIdioma($tweets, $form) {
