@@ -36,8 +36,9 @@ class EstadisticasTweetsController extends Controller
         $fechaFinal = $data['fechaFinal'];
         $hashtag = $data['hashtag'];
         $idioma = $data['idioma'];
-        $fecha = $data['fecha'];
+        $cantidad = $data['cantidad'];
         $menciones = $data['menciones'];
+        $retweet = $data['retweet'];
 
         $filter = [];
       	$filterUsuario = [];
@@ -71,8 +72,36 @@ class EstadisticasTweetsController extends Controller
       		$tweets = $this->queryTweetsHashTag($filter, $filterUsuario, $filterDate);
       		return $this->agruparPorHashtag($tweets, $form);
       	}
-      	dump('errp');
+       if ($idioma == 1) {
+       	$tweets = $this->queryAllTweets($filter, $filterUsuario, $filterDate);
+       	return $this->agruparPorIdioma($tweets, $form);
+       }
 
+       if ($cantidad == 1) {
+       		$tweets = $this->queryAllTweets($filter, $filterUsuario, $filterDate);
+       		return $this->agruparCantidadTweets($tweets, $form);
+       }
+
+       if ($menciones == 1) {
+       		$tweets = $this->queryAllTweets($filter, $filterUsuario, $filterDate);
+       		return $this->agruparPorCantidadMenciones($tweets, $form);
+       }
+
+	}
+
+	private function queryAllTweets($filter, $filterUsuario, $filterDate){
+		$filter = array_merge($filter, $filterUsuario);
+        $filter = array_merge($filter, $filterDate);
+
+        $query = new \MongoDB\Driver\Query($filter);
+        //conectar con mongo
+        $mongo = new \MongoDB\Driver\Manager("mongodb://localhost:27017");
+		$rows = $mongo->executeQuery('crm.tweets', $query);
+		$tweets = [];
+		foreach($rows as $r){
+			$tweets[] = $r; 
+  		}
+		return $tweets;
 	}
 	private function queryTweetsHashTag($filter, $filterUsuario, $filterDate){
 		$filter = array_merge($filter, $filterUsuario);
@@ -95,8 +124,109 @@ class EstadisticasTweetsController extends Controller
 		return $tweets;
 	}
 
+	private function agruparPorCantidadMenciones($tweets, $form)
+	{
+		$fechas = [];
+		foreach($tweets as $tweet) {
+			$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');;
+			
+			
+			if (!in_array($fechaActual, $fechas)){
+				if (count($tweet->entities->user_mentions)>0){
+					$fechas[] = $fechaActual;
+				}
+ 			}
+		}
+		$cantPorTweet = [];
+		foreach($fechas as $fecha) {
+			$cantidadMentions = 0;
+			foreach($tweets as $tweet) {
+				$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');
+				if ($fechaActual == $fecha){
+					$cantidadMentions += count($tweet->entities->user_mentions);
+	 			}
+			}
+			$cantPorTweet[] = $cantidadMentions;
+		}
+		
+		return $this->render('MongoDBBundle:Default:estadisticasCantidad.html.twig',
+			[
+				'data' => true,
+				'labels' => $fechas,
+				'cantidades' => $cantPorTweet,
+				'form' => $form->createView()
+			]
+		);
+	}
+	private function agruparCantidadTweets($tweets, $form){
+		$fechas = [];
+		foreach($tweets as $tweet) {
+			$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');;
+			
+			if (!in_array($fechaActual, $fechas)){
+				$fechas[] = $fechaActual;
+ 			}
+		}
+		$cantPorTweet = [];
+		foreach($fechas as $fecha) {
+			$cantTweets = 0;
+			foreach($tweets as $tweet) {
+				$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');
+				if ($fechaActual == $fecha){
+					$cantTweets = $cantTweets + 1;
+	 			}
+			}
+			$cantPorTweet[] = $cantTweets;
+		}
+		
+		return $this->render('MongoDBBundle:Default:estadisticasCantidad.html.twig',
+			[
+				'data' => true,
+				'labels' => $fechas,
+				'cantidades' => $cantPorTweet,
+				'form' => $form->createView()
+			]
+		);
+		
+	}
+
+	private function agruparPorIdioma($tweets, $form) {
+		$idiomas = [];
+		foreach ($tweets as $tweet) {
+			$lang = $tweet->lang;
+			if (!in_array($lang, $idiomas)) {
+				$idiomas[] = $lang;
+			}
+
+		}
+		$cantIdiomas = [];
+		$colors = [];
+		foreach ($idiomas as $idioma) {
+			$cantidadIdiomas = 0;
+			foreach ($tweets as $tweet) {
+				$lang = $tweet->lang;
+				if ($lang == $idioma) {
+					$cantidadIdiomas = $cantidadIdiomas + 1;
+				}
+
+			}
+			$cantIdiomas[] = $cantidadIdiomas;
+			$colors[] = '#'.$this->random_color();
+		}
+
+		return $this->render('MongoDBBundle:Default:estadisticasIdioma.html.twig',
+			[
+				'data' => true,
+				'labels' => $idiomas,
+				'cantidades' => $cantIdiomas,
+				'colores' => $colors,
+				'form' => $form->createView()
+			]
+		);
+	}
+
 	private function agruparPorHashtag($tweets, $form){
-		dump(count($tweets));
+		
 		$hashtags = [];
 		//encontrar todos los hashtags únicos
 		foreach ($tweets as $tweet) {
@@ -123,8 +253,7 @@ class EstadisticasTweetsController extends Controller
 			}
 			$cantidadPorTag[] = $cant;
 		}
-		dump(($hashtags));
-		dump(($cantidadPorTag));
+		
 		return $this->render('MongoDBBundle:Default:estadisticasHashtag.html.twig',
 			[
 				'data' => true,
@@ -149,5 +278,12 @@ class EstadisticasTweetsController extends Controller
         $stmt->execute();
         $res = $stmt->fetchAll();
          return $res[0]["twitter_id"];
+	}
+	private function random_color_part() {
+    return str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
+	}
+
+	private function random_color() {
+	    return $this->random_color_part() . $this->random_color_part() . $this->random_color_part();
 	}
 }

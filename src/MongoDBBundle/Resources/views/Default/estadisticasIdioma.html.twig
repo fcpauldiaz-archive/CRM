@@ -32,7 +32,7 @@
             {{form_row(form.idioma)}}
         </div>
     </div>
-    <div class="row">
+     <div class="row">
         <div class="col-md-6">
             {{form_row(form.cantidad)}}
         </div>
@@ -53,10 +53,11 @@
             labels: {{ labels|json_encode|raw }},
             datasets: [
                 {
-                    label: "Hashtags Stats",
+                    label: "Idiomas",
                     fill: false,
                     lineTension: 0.1,
-                    backgroundColor: "rgba(41,34,240,0.6)",
+                    backgroundColor: {{ colores|json_encode|raw }},
+                    hoverBackgroundColor: {{ colores|json_encode|raw }},
                     borderColor: "rgba(75,192,192,1)",
                     borderCapStyle: 'butt',
                     borderDash: [],
@@ -86,7 +87,7 @@
         }
         var ctx = document.getElementById('tags').getContext('2d');
            var myBarChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'pie',
                 data: data,
                 options: {
                     scales: {
