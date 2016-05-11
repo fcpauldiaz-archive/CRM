@@ -12,3 +12,4 @@ services:
     my_user_provider:
         class:        MongoDBBundle\Security\MyFOSUBUserProvider
         arguments: ['@fos_user.user_manager', { twitter: twitter_id }]
+  

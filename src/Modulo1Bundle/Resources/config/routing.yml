@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 client:
     resource: "@Modulo1Bundle/Controller/"
     type:     annotation
     prefix:   /
+=======
+modulo1_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: Modulo1Bundle:Default:index }
+
+>>>>>>> 0e431736a0fb7ebf7c1ce31232c21a56c04172d9

@@ -5,9 +5,34 @@ namespace MongoDBBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityManager;
+use ClientBundle\Entity\Client;
 
 class ConsultaTweetsType extends AbstractType
 {
+
+    private $collection;
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->collection = [];
+        $em = $entityManager;
+        $sql = " 
+            SELECT u.id, u.nombres, u.apellidos,
+                 u.twitter_username
+            FROM client u
+            ";
+
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+        foreach($res as $r){
+           $this->collection[$r["id"]] = $r["nombres"].' '.$r["apellidos"].'-  @'.$r["twitter_username"] ;
+        }
+        
+
+    }
+
+
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
@@ -15,9 +40,10 @@ class ConsultaTweetsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('usuario', 'entity', [
-                'class' => 'UserBundle:Usuario',
+        ->add('usuario', 'choice', [
+                'choices' => $this->collection,
                 'label' => false,
+                'empty_value' => 'Escoja un cliente',
                 'required' => false,
                 'attr' => [
                     'class' => 'select2'
@@ -43,13 +69,18 @@ class ConsultaTweetsType extends AbstractType
         ])
          ->add('estadisticas', 'choice', [
                 'choices'  => array(
-                    'Sí' => 0,
-                    'No' => 1,
+                    'No' => 0,
+                    'Sí' => 1,
                 ),
             // *this line is important*
             'choices_as_values' => true,
             'label' => '¿Incluir solo tweets con RT y FAV?',
             'required' => true,
+        ])
+        ->add('texto', 'text', [
+        
+            'label' => 'Buscar Tweets con el texto',
+            'required' => false,
         ])
         ->add('submit', 'submit', [
                 'label' => 'Buscar',

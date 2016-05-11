@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+	<h1>Estadísticas de Tweets</h1>
+
+	{{form_start(form)}}
+	 <div class="row">
+        <div class="col-md-6">
+        	<h4>Usuario</h4>
+            {{form_row(form.usuario)}}
+        </div>
+        <div class="col-md-6">
+            
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+
+            {{form_row(form.fechaInicial)}}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.fechaFinal)}}
+        </div>
+    </div>
+      <br>
+    <div class="row">
+        <div class="col-md-6">
+            {{form_row(form.hashtag)}}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.idioma)}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            {{form_row(form.cantidad)}}
+        </div>
+        <div class="col-md-6">
+            {{form_row(form.menciones)}}
+        </div>
+    </div>
+
+    {{form_end(form)}}
+    {% if data is defined %}
+        <canvas id="tags" width="500" height="400"></canvas>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.2/Chart.min.js">
+       </script>
+        <script>
+         var barChartData = {
+            labels: {{ labels|json_encode|raw }},
+            datasets: [{
+                type: 'bar',
+                  label: "RT",
+                    data: {{ RT|json_encode|raw }},
+                    fill: false,
+                    backgroundColor: '#71B37C',
+                    borderColor: '#71B37C',
+                    hoverBackgroundColor: '#71B37C',
+                    hoverBorderColor: '#71B37C',
+                    yAxisID: 'y-axis-1'
+            }, {
+                label: "FAV",
+                    type:'bar',
+                    data: {{ FAV|json_encode|raw }},
+                    fill: false,
+                    borderColor: '#EC932F',
+                    backgroundColor: 'rgba(41,34,240,0.6)',
+                    pointBorderColor: '#EC932F',
+                    pointBackgroundColor: '#EC932F',
+                    pointHoverBackgroundColor: '#EC932F',
+                    pointHoverBorderColor: '#EC932F',
+                    yAxisID: 'y-axis-2'
+            } ]
+        };
+        
+        window.onload = function() {
+            var ctx = document.getElementById("tags").getContext("2d");
+            window.myBar = new Chart(ctx, {
+                type: 'bar',
+                data: barChartData,
+                options: {
+                responsive: true,
+                tooltips: {
+                  mode: 'label'
+              },
+              elements: {
+                line: {
+                    fill: false
+                }
+            },
+              scales: {
+                xAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: false
+                    },
+                    labels: {
+                        show: true,
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    gridLines:{
+                        display: false
+                    },
+                    labels: {
+                        show:true,
+                        
+                    }
+                }, {
+                    type: "linear",
+                    display: true,
+                    position: "right",
+                    id: "y-axis-2",
+                    gridLines:{
+                        display: false
+                    },
+                    labels: {
+                        show:true,
+                        
+                    }
+                }]
+            }
+            }
+            });
+        };
+        </script>
+    {% endif %}
+
+{% endblock %}

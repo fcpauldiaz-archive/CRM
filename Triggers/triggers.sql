@@ -1,3 +1,14 @@
+create or replace function telefono_limit()
+ RETURNS "trigger" AS
+ $$	
+ BEGIN
+	if length(New.numero_telefono)>16 THEN
+		RAISE EXCEPTION 'Numero de telefono debe ser menor a 16 digitos';
+	END IF;
+   Return NEW;
+ END;
+ $$ LANGUAGE plpgsql;
+
 
 create trigger telefono_trigger
 before insert 
@@ -5,77 +16,68 @@ on telefono
 for each row 
 execute procedure telefono_limit();
 
-create or replace function telefono_limit()
- RETURNS "trigger" AS
- $$	
- BEGIN
-	if length(New.numerotelefono)>16 THEN
-		RAISE EXCEPTION 'Numero de telefono debe ser menor a 14 digitos';
-	END IF;
-   Return NEW;
- END;
- $$ LANGUAGE plpgsql;
 
- create trigger correo_trigger
-before insert 
-on correo
-for each row 
-execute procedure contains();
+ 
 
 create or replace function contains()
  RETURNS "trigger" AS
  $$	
  BEGIN
-	if position('@' in New.correoelectronico) = 0 THEN
+	if position('@' in New.correo_electronico) = 0 THEN
 		RAISE EXCEPTION 'El correo electronico debe contener @';
 	END IF;
-	if position('.' in New.correoelectronico) = 0 THEN
+	if position('.' in New.correo_electronico) = 0 THEN
 		RAISE EXCEPTION 'El correo electronico debe contener .';
 	END IF;
    Return NEW;
  END;
  $$ LANGUAGE plpgsql;
 
-
- create trigger sexo_trigger
+create trigger correo_trigger
 before insert 
-on client
+on correo
 for each row 
-execute procedure sexo_choice();
+execute procedure contains();
+
+
 
 create or replace function sexo_choice()
  RETURNS "trigger" AS
  $$	
  BEGIN
-	if New.sexo != 'M' AND New.sexo != 'F' AND New.sexo != 'm' AND New.sexo != 'f' AND New.sexo != 'masculino' AND New.sexo != 'femenino'THEN
-		RAISE EXCEPTION 'Sexo solo puede ser masculino o femenino ';
+	if upper(New.sexo) != 'M' AND upper(New.sexo) != 'F' AND upper(New.sexo) != 'MASCULINO' AND upper(New.sexo) != 'FEMENINO' AND upper(New.sexo) != 'OTRO' THEN
+		RAISE EXCEPTION 'Sexo solo puede ser masculino , femenino u otro';
 	END IF;
    Return NEW;
  END;
  $$ LANGUAGE plpgsql;
 
-  create trigger estado_civil_trigger
+  create trigger sexo_trigger
 before insert 
 on client
 for each row 
-execute procedure estado_civil_choice();
+execute procedure sexo_choice();
+
+
 
 create or replace function estado_civil_choice()
  RETURNS "trigger" AS
  $$	
  BEGIN
-	if New.estadocivil != 'SOLTERO' AND New.estadocivil != 'CASADO' AND New.estadocivil != 'SOLTERA' AND New.estadocivil != 'CASADA' AND New.estadocivil != 'soltero' AND New.estadocivil != 'casado' AND New.estadocivil != 'soltera' AND New.estadocivil != 'casada'THEN
+	if upper(New.estado_civil) != 'SOLTERO' AND upper(New.estado_civil) != 'CASADO' AND upper(New.estado_civil) != 'SOLTERA' AND upper(New.estado_civil) != 'CASADA' AND upper(New.estado_civil) != 'soltero' AND upper(New.estado_civil) != 'casado' AND upper(New.estado_civil) != 'soltera' AND upper(New.estado_civil) != 'casada'THEN
 		RAISE EXCEPTION 'Estado civil solo puede ser: solter@ casad@';
 	END IF;
    Return NEW;
  END;
  $$ LANGUAGE plpgsql;
 
- create trigger nit_trigger
+   create trigger estado_civil_trigger
 before insert 
 on client
 for each row 
-execute procedure nit_limit();
+execute procedure estado_civil_choice();
+
+
 
 create or replace function nit_limit()
  RETURNS "trigger" AS
@@ -91,11 +93,13 @@ create or replace function nit_limit()
  END;
  $$ LANGUAGE plpgsql;
 
-create trigger dpi_trigger
+ create trigger nit_trigger
 before insert 
 on client
 for each row 
-execute procedure dpi_limit();
+execute procedure nit_limit();
+
+
 
 create or replace function dpi_limit()
  RETURNS "trigger" AS
@@ -108,11 +112,13 @@ create or replace function dpi_limit()
  END;
  $$ LANGUAGE plpgsql;
 
- create trigger direccion_trigger
+ create trigger dpi_trigger
 before insert 
-on direccion
+on client
 for each row 
-execute procedure direccion_limit();
+execute procedure dpi_limit();
+
+
 
 create or replace function direccion_limit()
  RETURNS "trigger" AS
@@ -128,11 +134,13 @@ create or replace function direccion_limit()
  END;
  $$ LANGUAGE plpgsql;
 
- create trigger expired_trigger
-after update 
-on usuario
+ create trigger direccion_trigger
+before insert 
+on direccion
 for each row 
-execute procedure update_expired();
+execute procedure direccion_limit();
+
+
 
 create or replace function update_expired()
  RETURNS "trigger" AS
@@ -145,12 +153,12 @@ create or replace function update_expired()
  END;
  $$ LANGUAGE plpgsql;
 
- 
- create trigger locked_trigger
-after insert 
+ create trigger expired_trigger
+after update 
 on usuario
 for each row 
-execute procedure locked();
+execute procedure update_expired();
+ 
 
 create or replace function locked()
  RETURNS "trigger" AS
@@ -163,12 +171,13 @@ create or replace function locked()
  END;
  $$ LANGUAGE plpgsql;
 
- 
- create trigger enabled_trigger
-after update 
+ create trigger locked_trigger
+after insert 
 on usuario
 for each row 
-execute procedure update_enabled();
+execute procedure locked();
+
+ 
 
 create or replace function update_enabled()
  RETURNS "trigger" AS
@@ -180,12 +189,15 @@ create or replace function update_enabled()
    Return NEW;
  END;
  $$ LANGUAGE plpgsql;
- 
- create trigger delete_fk_client
-before delete 
-on client
+
+ create trigger enabled_trigger
+after update 
+on usuario
 for each row 
-execute procedure delete_fk_client();
+execute procedure update_enabled();
+
+ 
+ 
 
 create or replace function delete_fk_client()
  RETURNS "trigger" AS
@@ -198,11 +210,13 @@ create or replace function delete_fk_client()
  END;
  $$ LANGUAGE plpgsql;
 
- create trigger delete_fk_membresia
+create trigger delete_fk_client
 before delete 
-on tipo_membresia
+on client
 for each row 
-execute procedure delete_fk_membresia();
+execute procedure delete_fk_client();
+
+
 
 create or replace function delete_fk_membresia()
  RETURNS "trigger" AS
@@ -212,3 +226,9 @@ create or replace function delete_fk_membresia()
    Return old;
  END;
  $$ LANGUAGE plpgsql;
+
+  create trigger delete_fk_membresia
+before delete 
+on tipo_membresia
+for each row 
+execute procedure delete_fk_membresia();
