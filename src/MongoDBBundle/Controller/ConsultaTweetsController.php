@@ -19,7 +19,7 @@ class ConsultaTweetsController extends Controller
 	 */
 	public function consultaTweetsAction(Request $request)
 	{
-		$form = $this->createForm(new ConsultaTweetsType());
+		$form = $this->createForm(new ConsultaTweetsType($this->getDoctrine()->getManager()));
 		$form->handleRequest($request);
         if (!$form->isValid()) {
             return $this->render(
@@ -47,9 +47,9 @@ class ConsultaTweetsController extends Controller
       
       	if (isset($usuario)) {
 	      	$filterUsuario = [
-		      		'user.id_str' 
+		      		'user.screen_name' 
 		      			=> 	
-		      		$this->getTwitterId($usuario)
+		      		$this->getTwitterUsername($usuario)
 	      		];
       	}
       	if (isset($fechaInicial) && isset($fechaFinal)) {
@@ -119,18 +119,18 @@ class ConsultaTweetsController extends Controller
 
 	}
 
-	private function getTwitterId($usuario) {
+	private function getTwitterUsername($usuario) {
 		$sql = " 
-            SELECT u.twitter_id
-            FROM usuario u
+            SELECT u.twitter_username
+            FROM client u
             WHERE u.id = ?
             ";
 
         $em = $this->getDoctrine()->getManager();
         $stmt = $em->getConnection()->prepare($sql);
-        $stmt->bindValue(1, $usuario->getId());
+        $stmt->bindValue(1, $usuario);
         $stmt->execute();
         $res = $stmt->fetchAll();
-         return $res[0]["twitter_id"];
+         return $res[0]["twitter_username"];
 	}
 }

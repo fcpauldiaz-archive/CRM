@@ -41,6 +41,8 @@ class Client
 
     private $tipoMembresia;
 
+    private $twitterUsername;
+
     public function __construct()
     {
         $this->correo = new ArrayCollection();
@@ -56,6 +58,15 @@ class Client
     public function getId()
     {
         return $this->id;
+    }
+     /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -332,6 +343,21 @@ class Client
     public function getTipoMembresia()
     {
         return $this->tipoMembresia;
+    }
+
+    public function setTwitterUsername($username)
+    {
+        $this->twitterUsername = $username;
+    }
+
+    public function getTwitterUsername()
+    {
+        return $this->twitterUsername;
+    }
+
+    public function __toString()
+    {
+        return $this->nombres.' '.$this->apellidos;
     }
 }
 
