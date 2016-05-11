@@ -86,6 +86,10 @@ class EstadisticasTweetsController extends Controller
        		$tweets = $this->queryAllTweets($filter, $filterUsuario, $filterDate);
        		return $this->agruparPorCantidadMenciones($tweets, $form);
        }
+       if ($retweet == 1) {
+       		$tweets = $this->queryRtTweets($filter, $filterUsuario, $filterDate);
+       		return $this->agruparPorRt($tweets, $form);
+       }
 
 	}
 
@@ -122,6 +126,66 @@ class EstadisticasTweetsController extends Controller
 			$tweets[] = $r; 
   		}
 		return $tweets;
+	}
+
+	private function queryRtTweets($filter, $filterUsuario, $filterDate)
+	{
+		$filter = array_merge($filter, $filterUsuario);
+        $filter = array_merge($filter, $filterDate);
+		$filterEst = [ 
+        		'$or' => [
+        			['retweet_count' => ['$gt' => 0]],
+        			['favorite_count' => ['$gt' => 0]]
+        		]
+        		
+        	];
+        $filter = array_merge($filter, $filterEst);
+
+        $query = new \MongoDB\Driver\Query($filter);
+        //conectar con mongo
+        $mongo = new \MongoDB\Driver\Manager("mongodb://localhost:27017");
+		$rows = $mongo->executeQuery('crm.tweets', $query);
+		$tweets = [];
+		foreach($rows as $r){
+			$tweets[] = $r; 
+  		}
+		return $tweets;
+	}
+
+	private function agruparPorRt($tweets, $form)
+	{
+		$fechas = [];
+		foreach($tweets as $tweet) {
+			$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');;
+			
+			if (!in_array($fechaActual, $fechas)){
+				$fechas[] = $fechaActual;
+ 			}
+		}
+		$cantRT = [];
+		$cantFAV = [];
+		foreach($fechas as $fecha) {
+			$cantidadRT = 0;
+			$cantidadFAV = 0;
+			foreach($tweets as $tweet) {
+				$fechaActual = $tweet->created_at->toDateTime()->format('Y-m-d');
+				if ($fechaActual == $fecha){
+					$cantidadRT +=  $tweet->retweet_count;
+					$cantidadFAV += $tweet->favorite_count;
+	 			}
+			}
+			$cantRT[] = $cantidadRT;
+			$cantFAV[] = $cantidadFAV;
+		}
+		return $this->render('MongoDBBundle:Default:estadisticasRT.html.twig',
+			[
+				'data' => true,
+				'labels' => $fechas,
+				'RT' => $cantRT,
+				'FAV' => $cantFAV,
+				'form' => $form->createView()
+			]
+		);
 	}
 
 	private function agruparPorCantidadMenciones($tweets, $form)

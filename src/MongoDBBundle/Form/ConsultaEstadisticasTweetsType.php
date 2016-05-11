@@ -54,7 +54,7 @@ class ConsultaEstadisticasTweetsType extends AbstractType
                 ),
             // *this line is important*
             'choices_as_values' => true,
-            'label' => '¿Agrupar por RT por día?',
+            'label' => '¿Agrupar por RT y FAV por día?',
             'required' => true,
         ])
         ->add('cantidad', 'choice', [

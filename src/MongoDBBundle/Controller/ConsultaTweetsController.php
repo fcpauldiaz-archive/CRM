@@ -35,6 +35,7 @@ class ConsultaTweetsController extends Controller
         $fechaFinal = $data['fechaFinal'];
         $imagen = $data['imagen'];
         $estadisticas = $data['estadisticas'];
+        $texto = $data['texto'];
         
       
       	$filter = [];
@@ -42,6 +43,7 @@ class ConsultaTweetsController extends Controller
       	$filterEst = [];
       	$filterImg = [];
       	$filterDate = [];
+        $filterTexto = [];
       
       	if (isset($usuario)) {
 	      	$filterUsuario = [
@@ -68,7 +70,7 @@ class ConsultaTweetsController extends Controller
 
 
       	}
-        if ($estadisticas == 0){
+        if ($estadisticas == 1){
         	$filterEst = [ 
         		'$or' => [
         			['retweet_count' => ['$gt' => 0]],
@@ -84,11 +86,17 @@ class ConsultaTweetsController extends Controller
         		]
         	];
         }
+        if (isset($texto)) {
+          $filterTexto = [
+              'text'=> array('$regex' => $texto)
+            ];
+        }
         //unir queries 
         $filter = array_merge($filter, $filterUsuario);
         $filter = array_merge($filter, $filterEst);
         $filter = array_merge($filter, $filterImg);
         $filter = array_merge($filter, $filterDate);
+        $filter = array_merge($filter, $filterTexto);
         $query = new \MongoDB\Driver\Query($filter);
         //conectar con mongo
         $mongo = new \MongoDB\Driver\Manager("mongodb://localhost:27017");

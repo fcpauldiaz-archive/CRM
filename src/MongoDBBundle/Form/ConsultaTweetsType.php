@@ -43,13 +43,18 @@ class ConsultaTweetsType extends AbstractType
         ])
          ->add('estadisticas', 'choice', [
                 'choices'  => array(
-                    'Sí' => 0,
-                    'No' => 1,
+                    'No' => 0,
+                    'Sí' => 1,
                 ),
             // *this line is important*
             'choices_as_values' => true,
             'label' => '¿Incluir solo tweets con RT y FAV?',
             'required' => true,
+        ])
+        ->add('texto', 'text', [
+        
+            'label' => 'Buscar Tweets con el texto',
+            'required' => false,
         ])
         ->add('submit', 'submit', [
                 'label' => 'Buscar',
