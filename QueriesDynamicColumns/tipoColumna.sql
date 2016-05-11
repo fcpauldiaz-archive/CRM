@@ -1,0 +1,6 @@
+CREATE SEQUENCE tipo_columna_id INCREMENT BY 1 MINVALUE 1 START 1;
+CREATE TABLE tipo_columna (
+    id INT NOT NULL,
+    tipo VARCHAR(20) NOT NULL,
+    PRIMARY KEY(id)
+);
