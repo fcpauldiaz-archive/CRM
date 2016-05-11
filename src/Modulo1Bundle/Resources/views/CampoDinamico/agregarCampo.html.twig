@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% set col_size = 'xs' %}
+
+    {% block body_title %}
+        <h2>Test agregar campo dinámico</h2>
+    {% endblock body_title %}
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}, 'style': 'horizontal', 'col_size': col_size }) }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.nombre )}}
+    {{ form_row(form.tipo) }}
+
+    {{ form_end(form) }}
+{% endblock %}

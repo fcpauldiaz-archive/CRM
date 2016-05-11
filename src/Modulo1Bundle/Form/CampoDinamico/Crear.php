@@ -33,6 +33,8 @@ class Crear extends AbstractType
             ]);
     }
 
-    function configureOptions(OptionsResolver $resolver)
-    {}
+    public function getName()
+    {
+        return 'crear_campo_dinamico';
+    }
 }

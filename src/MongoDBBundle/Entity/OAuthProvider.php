@@ -81,4 +81,3 @@ class OAuthProvider implements AuthenticationProviderInterface
         return $token;
     }
 }
-Status API Training Shop Blog About
