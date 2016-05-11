@@ -2,8 +2,6 @@
 
 namespace GeneralClientDataBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 class Correo
 {
     private $id;
