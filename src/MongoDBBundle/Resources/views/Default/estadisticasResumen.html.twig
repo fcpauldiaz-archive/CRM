@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<h1>Estadísticas Resumen del CRM</h1>
+
+<h1>Usuario con más menciones</h1>
+<h2>{{usuarioMenciones[0]}}</h2>
+<h2>{{usuarioMenciones[1]}}</h2>
+<h2>{{usuarioMenciones[2]}}</h2>
+<br>
+<br>
+<h1>Cantidad de tweets promedio</h1>
+<h2>{{cantidadTweets}}</h2>
+<br>
+<br>
+<h1>Usuario con mayor cantidad de tweets</h1>
+<h2>{{usuarioTweets[0]}}</h2>
+<h2>{{usuarioTweets[1]}}</h2>
+<br>
+<br>
+<h1>Usuario con mayor cantidad de followers</h1>
+<h2>{{usuarioFollowers[0]}}</h2>
+<h2>{{usuarioFollowers[1]}}</h2>
+<br><br>
+<h1>Usuario con mayor relación de followers/following<h1>
+<h2>{{usuarioRelacion[0]}}</h2>
+<h2>{{usuarioRelacion[1]}}</h2>
+
+
+
+{% endblock %}
