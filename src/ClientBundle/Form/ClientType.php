@@ -26,7 +26,7 @@ class ClientType extends AbstractType
             'label' => 'Número de identificación Tributaria',
             'required' => true,
         ])
-        ->add('frecuente', 'boolean', [
+        ->add('frecuente', 'checkbox', [
             'label' => 'Es cliente frecuente',
             'required' => true,
         ])
@@ -42,7 +42,7 @@ class ClientType extends AbstractType
             'label' => 'estado Civil',
             'required' => true,
         ])
-        ->add('fotoClinte', 'text', [
+        ->add('imageFile', 'file', [
             'label' => 'Foto del Cliente',
             'required' => true,
         ])

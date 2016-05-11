@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use GeneralClientDataBundle\Entity\TipoMembresia as TipoMembresiaEntity;
 
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 class Client
 {
     private $id;
@@ -22,6 +25,8 @@ class Client
     private $apellidos;
 
     private $estadoCivil;
+
+    private $imageFile;
 
     private $fotoCliente;
 
@@ -50,6 +55,42 @@ class Client
         $this->direccion = new ArrayCollection();
     }
 
+    
+    public function setImageFile(UploadedFile $image = null)
+    {
+        $this->imageFile = $image;
+
+        return $this;
+    }
+
+    public function uploadImage()
+    {
+        // si es nulo, se sale
+        if (null === $this->getFile()) {
+            return;
+        }
+        //usar el nombre original de la imagen
+
+        // guardar archivo
+        $this->getFile()->move(
+            $this->getUploadRootDir(),
+            $this->getFile()->getClientOriginalName()
+        );
+
+        // guardar el nombre en la base de datos
+        $this->fotoCliente = $this->getFile()->getClientOriginalName();
+
+        // ya no se necesita
+        $this->file = null;
+    }
+
+    /**
+     * @return File
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
     /**
      * Get id
      *
