@@ -2,8 +2,8 @@ create or replace function telefono_limit()
  RETURNS "trigger" AS
  $$	
  BEGIN
-	if length(New.numerotelefono)>16 THEN
-		RAISE EXCEPTION 'Numero de telefono debe ser menor a 14 digitos';
+	if length(New.numero_telefono)>16 THEN
+		RAISE EXCEPTION 'Numero de telefono debe ser menor a 16 digitos';
 	END IF;
    Return NEW;
  END;
@@ -23,10 +23,10 @@ create or replace function contains()
  RETURNS "trigger" AS
  $$	
  BEGIN
-	if position('@' in New.correoelectronico) = 0 THEN
+	if position('@' in New.correo_electronico) = 0 THEN
 		RAISE EXCEPTION 'El correo electronico debe contener @';
 	END IF;
-	if position('.' in New.correoelectronico) = 0 THEN
+	if position('.' in New.correo_electronico) = 0 THEN
 		RAISE EXCEPTION 'El correo electronico debe contener .';
 	END IF;
    Return NEW;
@@ -45,8 +45,8 @@ create or replace function sexo_choice()
  RETURNS "trigger" AS
  $$	
  BEGIN
-	if New.sexo != 'M' AND New.sexo != 'F' AND New.sexo != 'm' AND New.sexo != 'f' AND New.sexo != 'masculino' AND New.sexo != 'femenino'THEN
-		RAISE EXCEPTION 'Sexo solo puede ser masculino o femenino ';
+	if upper(New.sexo) != 'M' AND upper(New.sexo) != 'F' AND upper(New.sexo) != 'MASCULINO' AND upper(New.sexo) != 'FEMENINO' AND upper(New.sexo) != 'OTRO' THEN
+		RAISE EXCEPTION 'Sexo solo puede ser masculino , femenino u otro';
 	END IF;
    Return NEW;
  END;
@@ -64,7 +64,7 @@ create or replace function estado_civil_choice()
  RETURNS "trigger" AS
  $$	
  BEGIN
-	if New.estadocivil != 'SOLTERO' AND New.estadocivil != 'CASADO' AND New.estadocivil != 'SOLTERA' AND New.estadocivil != 'CASADA' AND New.estadocivil != 'soltero' AND New.estadocivil != 'casado' AND New.estadocivil != 'soltera' AND New.estadocivil != 'casada'THEN
+	if upper(New.estado_civil) != 'SOLTERO' AND upper(New.estado_civil) != 'CASADO' AND upper(New.estado_civil) != 'SOLTERA' AND upper(New.estado_civil) != 'CASADA' AND upper(New.estado_civil) != 'soltero' AND upper(New.estado_civil) != 'casado' AND upper(New.estado_civil) != 'soltera' AND upper(New.estado_civil) != 'casada'THEN
 		RAISE EXCEPTION 'Estado civil solo puede ser: solter@ casad@';
 	END IF;
    Return NEW;
