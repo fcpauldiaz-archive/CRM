@@ -21,11 +21,11 @@ class Crear extends AbstractType
             ->add('tipo', 'choice', [
                 'label' => 'Tipo de valor del campo',
                 'choices' => [
-                    'INTEGER' => 'entero',
-                    'DOUBLE PRECISION' => 'decimal',
-                    'VARCHAR(50)' => 'texto',
-                    'DATE' => 'fecha',
-                    'BOOLEAN' => 'bandera'
+                    'INTEGER' => 'Entero',
+                    'DOUBLE PRECISION' => 'Decimal',
+                    'VARCHAR(50)' => 'Texto',
+                    'DATE' => 'Fecha',
+                    'BOOLEAN' => 'Bandera'
                 ]
             ])
             ->add('crear', 'submit', [

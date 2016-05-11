@@ -67,7 +67,7 @@
         <a href="{{ path('homepage')}}"><h3 class="text-muted">CRM</h3></a>
       </div>
       {% block body %}
-     
+        {% include 'BraincraftedBootstrapBundle::flash.html.twig'  with { 'close': true } %}
       {% endblock body %}
 
       <footer class="footer">
