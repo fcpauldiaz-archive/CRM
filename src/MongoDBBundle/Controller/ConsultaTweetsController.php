@@ -14,7 +14,7 @@ use Endroid\Twitter\Twitter;
 class ConsultaTweetsController extends Controller
 {
 	/**
-	 * @Route("tweets")
+	 * @Route("tweets", name="tweeter_query")
 	 * 
 	 */
 	public function consultaTweetsAction(Request $request)

@@ -14,7 +14,7 @@ use Endroid\Twitter\Twitter;
 class EstadisticasTweetsController extends Controller
 {
 	/**
-	 * @Route("tweets")
+	 * @Route("tweets", name="tweeter_stats")
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
