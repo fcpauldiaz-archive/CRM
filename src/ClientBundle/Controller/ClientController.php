@@ -29,6 +29,7 @@ class ClientController extends Controller
      *
      * @Route("/new", name="cliente_new")
      */
+
     public function newAction(Request $request)
     {
         $entity = new Client();
@@ -77,6 +78,7 @@ class ClientController extends Controller
             INSERT INTO client
             VALUES (
             nextval('client_id_seq'), 
+            :fecha,
             :nit,
             :frecuente,
             :nombres,
@@ -87,11 +89,9 @@ class ClientController extends Controller
             :profesion,
             :dpi,
             :nacion,
-            :twit,
             :tipo,
-            :fecha,
-            :usuario
-
+            :usuario,
+            :twit
             )
             ";
 
@@ -173,9 +173,35 @@ class ClientController extends Controller
             $stmt->execute();
         }
 
+        $formData = $form->getData();
+        foreach ($camposDinamicos as $campo) {
+            $value = $formData[$campo['nombre']];
+            $campo_dinamico_id = $campo['campo_id'];
+            $cliente_id = $this->getLastClienteIdInserted();
 
+            $insertValue = "";
+            switch ($campo['tipo']) {
+                case 'number':
+                    $insertValue = (string) $value;
+                    break;
+                case 'checkbox':
+                    if ($value === true) {
+                        $insertValue = "true";
+                        break;
+                    }
+                    $insertValue = "false";
+                    break;
+                case 'text':
+                    $insertValue = $value;
+                    break;
+                case 'date':
+                    $insertValue = $value->format('Y-m-d H:m:s');
+                    break;
+            }
 
-
+            $this->insertCampoDinamico($insertValue, $campo_dinamico_id, $cliente_id);
+        }
+        die();
     }
 
     private function getNombreTipoColumnas()
@@ -196,7 +222,8 @@ class ClientController extends Controller
 
             $returnArray[] = [
                 'nombre' => $campo['nombre'],
-                'tipo' => $this->processTipoColumna($tipo)
+                'tipo' => $this->processTipoColumna($tipo),
+                'campo_id' => $campo['id']
             ];
         }
 
@@ -240,5 +267,29 @@ class ClientController extends Controller
         }
 
         return $returnTipo;
+    }
+
+    private function insertCampoDinamico($valor, $campo_dinamico_id, $cliente_id)
+    {
+        $conexionDB = $this->get('database_connection');
+        $sql = "INSERT INTO valor_dinamico VALUES (nextval('valor_dinamico_id'), ?, ?, ?)";
+
+        $stmt = $conexionDB->prepare($sql);
+        $stmt->bindValue(1, $valor);
+        $stmt->bindValue(2, $campo_dinamico_id);
+        $stmt->bindValue(3, $cliente_id);
+
+        $stmt->execute();
+    }
+
+    private function getLastClienteIdInserted()
+    {
+        $conexionDB = $this->get('database_connection');
+        $sql = "SELECT id FROM client ORDER BY id DESC LIMIT 1;";
+
+        $stmt = $conexionDB->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll()[0]['id'];
     }
 }
