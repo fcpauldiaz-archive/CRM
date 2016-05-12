@@ -18,7 +18,7 @@ class DefaultController extends Controller
         //$collection = $client->demo->beers;
 
         //$result = $collection->insertOne( [ 'name' => 'Hinterland', 'brewery' => 'BrewDog' ] );
-         
+        
 
        // $mongo = $connection->getMongoClient();xxx
         return $this->render('default/index.html.twig');

@@ -70,9 +70,22 @@
         </nav>
         <a href="{{ path('homepage')}}"><h3 class="text-muted">CRM</h3></a>
       </div>
+      {% for flash_message in app.session.flashBag.get('success') %}
+       <div class="alert alert-success">
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+     {% for flash_message in app.session.flashBag.get('error') %}
+       <div class="alert alert-danger">
+            {{ flash_message }}
+        </div>
+    {% endfor %}
       {% block body %}
-        {% include 'BraincraftedBootstrapBundle::flash.html.twig'  with { 'close': true } %}
-      {% endblock body %}
+      
+
+  
+{% endblock %}
+     
 
       <footer class="footer">
         <p>&copy; 2016 UVG</p>

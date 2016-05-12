@@ -18,7 +18,8 @@ use ClientBundle\Form\ClientType;
 class ClientController extends Controller
 {
     /**
-     * @Route("/{id}", name="cliente_show")
+     * @Route("/{id}/show", name="cliente_show")
+     * @Method("GET")
      */
     public function showAction($id) 
     {
@@ -322,7 +323,6 @@ class ClientController extends Controller
             INSERT INTO client
             VALUES (
             nextval('client_id_seq'), 
-            :fecha,
             :nit,
             :frecuente,
             :nombres,
@@ -333,9 +333,12 @@ class ClientController extends Controller
             :profesion,
             :dpi,
             :nacion,
+            :twit,
             :tipo,
-            :usuario,
-            :twit
+            :fecha,
+            :usuario
+           
+            
             )
             ";
 
@@ -357,7 +360,21 @@ class ClientController extends Controller
         $stmt->bindValue("fecha", $fechaNacimiento, 'datetime');
         $stmt->bindValue("usuario", $usuario->getId());
 
-        $stmt->execute();
+        try {
+            $stmt->execute();
+        } catch (\Doctrine\DBAL\DBALException $e) {
+           $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+           $this->addFlash(
+            'error',
+            $error
+            );
+             return $this->render('ClientBundle:Client:newClient.html.twig',
+                 [
+                    'entity' => $entity,
+                    'form'   => $form->createView(),
+                ]
+            );
+        }
 
         $sql = " 
             Select currval('client_id_seq')
@@ -381,8 +398,21 @@ class ClientController extends Controller
             $stmt = $em->getConnection()->prepare($sql);
             $stmt->bindValue("direccion", $dir["d"]);
             $stmt->bindValue("cliente", $res[0]["currval"]);
-
-            $stmt->execute();
+            try {
+                $stmt->execute();
+            } catch (\Doctrine\DBAL\DBALException $e) {
+               $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+               $this->addFlash(
+                    'error',
+                    $error
+                );
+                 return $this->render('ClientBundle:Client:newClient.html.twig',
+                 [
+                    'entity' => $entity,
+                    'form'   => $form->createView(),
+                ]
+            );
+            }
         }
 
         $sql = " 
@@ -397,8 +427,21 @@ class ClientController extends Controller
             $stmt = $em->getConnection()->prepare($sql);
             $stmt->bindValue("correo", $mail["correoElectronico"]);
             $stmt->bindValue("cliente", $res[0]["currval"]);
-
-            $stmt->execute();
+            try {
+                $stmt->execute();
+            }catch (\Doctrine\DBAL\DBALException $e) {
+               $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+               $this->addFlash(
+                    'error',
+                    $error
+                );
+                 return $this->render('ClientBundle:Client:newClient.html.twig',
+                 [
+                    'entity' => $entity,
+                    'form'   => $form->createView(),
+                ]
+            );
+            }
         }
 
         $sql = " 
@@ -414,7 +457,23 @@ class ClientController extends Controller
             $stmt->bindValue("telefono", $phone["numeroTelefono"]);
             $stmt->bindValue("cliente", $res[0]["currval"]);
 
-            $stmt->execute();
+            try {
+
+                $stmt->execute();
+
+            }catch (\Doctrine\DBAL\DBALException $e) {
+               $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+               $this->addFlash(
+                    'error',
+                    $error
+                );
+                 return $this->render('ClientBundle:Client:newClient.html.twig',
+                 [
+                    'entity' => $entity,
+                    'form'   => $form->createView(),
+                ]
+            );
+            }
         }
 
         $formData = $form->getData();
@@ -445,7 +504,7 @@ class ClientController extends Controller
 
             $this->insertCampoDinamico($insertValue, $campo_dinamico_id, $cliente_id);
         }
-        die();
+       return $this->redirectToRoute('cliente');
     }
 
     private function getNombreTipoColumnas()
@@ -700,12 +759,16 @@ class ClientController extends Controller
             $stmt->bindValue(13, $id);
             $stmt->execute();
 
+            $this->get('session')->getFlashBag()->add('notice', 'Your message!');
             return $this->redirect($this->generateUrl('client_edit', array('id' => $id)));
         }
         }
         catch (\Doctrine\DBAL\DBALException $e) {
-          dump($e);
-          die();
+           $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+           $this->addFlash(
+            'error',
+            $error
+        );
         }
 
          return array(
