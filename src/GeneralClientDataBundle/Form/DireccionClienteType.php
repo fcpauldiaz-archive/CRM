@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 
-class CorreoType extends AbstractType
+class DireccionClienteType extends AbstractType
 {
    
 
@@ -18,17 +18,11 @@ class CorreoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('correoElectronico', 'email', [
-            'label' => 'Correo Electrónico',
+        ->add('d', 'text', [
+            'label' => 'Dirección',
             'required' => true,
         ])
-        ->add('submit', 'submit', [
-                'label' => 'Guardar',
-                'attr' => [
-                    'class' => 'btn btn-primary btn-block',
-                ],
-
-            ])
+      
 
         ;
     }
@@ -45,6 +39,6 @@ class CorreoType extends AbstractType
      */
     public function getName()
     {
-        return 'correo';
+        return 'direccion';
     }
 }

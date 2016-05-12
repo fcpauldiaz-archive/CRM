@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% set col_size = 'xs' %}
+
+    {% block body_title %}
+        <h2>Campos dinámicos agregados a Cliente</h2>
+    {% endblock body_title %}
+
+    <a
+        class="btn btn-default"
+        type="submit"
+        style = "font-size: 20px;"
+        href="{{path('modulo1_campodinamico_agregarcampo')}}"
+    >
+        Agregar campo
+    </a>
+
+    <table class="table table-bordered">
+        <thead>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Tipo columna</th>
+        </thead>
+        <tbody>
+            {% for campo in campos %}
+                <tr>
+                    <td>{{ campo['id'] }}</td>
+                    <td>{{ campo['nombre'] }}</td>
+                    <td>{{ campo['tipo'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

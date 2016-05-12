@@ -66,19 +66,20 @@ class Client
     public function uploadImage()
     {
         // si es nulo, se sale
-        if (null === $this->getFile()) {
+        if (null === $this->getImageFile()) {
             return;
         }
         //usar el nombre original de la imagen
 
         // guardar archivo
-        $this->getFile()->move(
+        
+        $this->getImageFile()->move(
             $this->getUploadRootDir(),
-            $this->getFile()->getClientOriginalName()
+            $this->getImageFile()->getClientOriginalName()
         );
 
         // guardar el nombre en la base de datos
-        $this->fotoCliente = $this->getFile()->getClientOriginalName();
+        $this->fotoCliente = $this->getUploadRootDir();
 
         // ya no se necesita
         $this->file = null;
@@ -399,6 +400,20 @@ class Client
     public function __toString()
     {
         return $this->nombres.' '.$this->apellidos;
+    }
+
+     protected function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'uploads';
     }
 }
 
