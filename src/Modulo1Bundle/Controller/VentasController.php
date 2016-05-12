@@ -69,6 +69,7 @@ class VentasController extends Controller
         $stmt->bindValue(2, $form->getData()['cantidad']);
         $stmt->bindValue(3, $form->getData()['total']);
         $stmt->bindValue(4, $form->getData()['cliente']);
+        $stmt->bindValue(5, $form->getData()['fecha']);
         $stmt->execute();
         $res = $stmt->fetchAll();
         $sql = " 
@@ -139,6 +140,7 @@ class VentasController extends Controller
             $ventas->setCliente($entity["cliente_id"]);
             $ventas->setTotal($entity["total"]);
             $ventas->setCantidad($entity["cantidad"]);
+            $ventas->setFecha($entity["fecha"]);
            // $correo->setCliente($entity["cliente_id"]);
             $entities[] = $ventas;
 
@@ -204,6 +206,7 @@ class VentasController extends Controller
             $ventas->setCliente($entity["cliente_id"]);
             $ventas->setTotal($entity["total"]);
             $ventas->setCantidad($entity["cantidad"]);
+            $ventas->setFecha($entity["fecha"]);
            // $correo->setCliente($entity["cliente_id"]);
             $entities[] = $ventas;
 
@@ -226,11 +229,12 @@ class VentasController extends Controller
             $cantidad = $data['cantidad'];
             $total = $data['total'];
             $cliente = $data['cliente'];
+            $fecha = $data['fecha'];
            
             $em = $this->getDoctrine()->getManager();
             $sql = " 
                 UPDATE  ventas
-                SET producto =?,cantidad = ?,total = ?, cliente = ?
+                SET producto =?,cantidad = ?,total = ?, cliente = ?, fecha = ?
                 Where id = ?
                 ";
 
@@ -240,7 +244,8 @@ class VentasController extends Controller
             $stmt->bindValue(2, $cantidad);
             $stmt->bindValue(3, $total);
             $stmt->bindValue(4, $cliente);
-            $stmt->bindValue(5, $id);
+            $stmt->bindValue(5, $fecha);
+            $stmt->bindValue(6, $id);
             $stmt->execute();
            
             return $this->redirect($this->generateUrl('venta_edit', array('id' => $id)));

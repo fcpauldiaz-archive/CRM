@@ -5,11 +5,13 @@ CREATE TABLE ventas
   producto_id integer,
   cantidad integer,
   total double precision,
+  client_id integer,
+  fecha date,
   CONSTRAINT venta_id PRIMARY KEY (id),
-  CONSTRAINT producto_id FOREIGN KEY (producto_id)
-      REFERENCES producto (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
   CONSTRAINT client_id FOREIGN KEY (client_id)
       REFERENCES client (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT producto_id FOREIGN KEY (producto_id)
+      REFERENCES producto (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 )
