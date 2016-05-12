@@ -41,10 +41,14 @@
             <tr>
                 
                 <th>FechaTweet</th>
+                <th>User</th>
                 <th>Text</th>
                 <th>Hastags</th>
                 <th>Retweets</th>
                 <th>Likes</th>
+                {% if multimedia == true %}
+                    <th>Imagen</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -54,6 +58,7 @@
 
         	<tr>
         		<td>{{timestamp|date('Y-m-d')}}</td>
+                <td>{{tweet.user.name}}</td>
         		<td>{{tweet.text}}</td>
         		<td>
         			<ul>
@@ -64,6 +69,12 @@
 		        </td>
 		        <td>{{tweet.retweet_count}}</td>
 		        <td>{{tweet.favorite_count}}</td>
+                {% if multimedia == true %}
+                    <td><img height="100" width="100" src="{{
+                        tweet.entities.media[0].media_url
+                    }}">
+                    </td>
+                {% endif %}
         	</tr>
         {% endfor %}
         </tbody>
