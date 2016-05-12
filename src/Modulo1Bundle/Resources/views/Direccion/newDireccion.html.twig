@@ -1,0 +1,15 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Crear Direccion</h1>
+
+    {{ form(form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('direccion') }}">
+            Regresar
+        </a>
+    </li>
+</ul>
+{% endblock %}

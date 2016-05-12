@@ -15,6 +15,20 @@ class Direccion
     private $cliente;
 
     /**
+     * Set id
+     *
+     * @param string $id
+     *
+     * @return Direccion
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * Get id
      *
      * @return integer
@@ -23,7 +37,7 @@ class Direccion
     {
         return $this->id;
     }
-
+    
     /**
      * Set direccion
      *
