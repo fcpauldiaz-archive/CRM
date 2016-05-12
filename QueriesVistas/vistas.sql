@@ -31,3 +31,9 @@ CREATE VIEW total_por_cliente AS
     FROM ventas JOIN client ON client.id = ventas.client_id
     GROUP BY client.nombres
     ORDER BY totalVendido;
+--ventas mayores a 100
+create view ventas_mayor_a_100 as
+select sum(ventas.total),producto.producto
+from ventas join producto on producto.id = ventas.producto_id
+where ventas.total>100
+group by producto.producto;
