@@ -150,6 +150,9 @@ class ClientType extends AbstractType
             'attr' => [
                 'placeholder' => 'Sin arroba'
             ]
+        ])
+        ->add('updateTweets', 'checkbox', [
+            'label' => '¿Desea guardar los tweets del cliente?',
         ]);
 
         foreach ($this->camposDinamicos as $campo) {
