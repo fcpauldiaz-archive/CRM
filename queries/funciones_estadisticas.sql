@@ -70,20 +70,20 @@ END; $$
  
 LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION producto (fecha1 date,fecha2 date) 
+CREATE OR REPLACE FUNCTION producto_totales (fecha1 date,fecha2 date) 
 RETURNS TABLE (
-	cant bigint,
+	cant double precision,
 	f date,
 	producto text)
 AS $$
 	
 BEGIN
 	RETURN QUERY
-	Select sum(total) as suma, ventas.fecha,producto.producto
-	from ventas join producto on ventas.producto_id = producto.id
+	Select sum(total) as suma, ventas.fecha, p.producto
+	from ventas join producto p on ventas.producto_id = p.id
 	where fecha >= fecha1 and fecha <= fecha2
-	group by ventas.fecha;
-	
+	group by ventas.fecha, p.producto;
+
 
 	
 END; $$ 
