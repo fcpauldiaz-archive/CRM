@@ -1,0 +1,110 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Cliente</h1>
+
+    <table class="table table-striped table-hover">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity[0]}}</td>
+            </tr>
+            <tr>
+                <th>NIT</th>
+                <td>{{ entity[1] }}</td>
+            </tr>
+            <tr>
+                <th>Frecuente</th>
+                <td>{{ entity[2] }}</td>
+            </tr>
+            <tr>
+                <th>Nombres</th>
+                <td>{{ entity[3] }}</td>
+            </tr>
+             <tr>
+                <th>Apellidos</th>
+                <td>{{ entity[4] }}</td>
+            </tr>
+            <tr>
+                <th>Estado Civil</th>
+                <td>{{ entity[5] }}</td>
+            </tr>
+            <tr>
+                <th>Foto</th>
+                <td> 
+                    <img  height="250" width="250" src="{{ asset('uploads/'~entity[6])}}">
+                    </img>
+                </td>
+            </tr>
+             <tr>
+                <th>Sexo</th>
+                <td>{{ entity[7] }}</td>
+            </tr>
+             <tr>
+                <th>Nacionalidad</th>
+                <td>{{ entity[8] }}</td>
+            </tr>
+            <tr>
+                <th>Twitter Username</th>
+                <td>{{ entity[9] }}</td>
+            </tr>
+            <tr>
+                <th>Fecha Nacimiento</th>
+                <td>{{ entity[10] }}</td>
+            </tr>
+            <tr>
+                <th>Correos</th>
+                <td>
+                    <ul>
+                        {% for correo in entity[11] %}
+                        
+                            <li>{{correo}}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Direcciones</th>
+                 <td>
+                    <ul>
+                        {% for correo in entity[12] %}
+                        
+                            <li>{{correo}}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Telefonos</th>
+                 <td>
+                    <ul>
+                        {% for correo in entity[13] %}
+                        
+                            <li>{{correo}}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Tipo Membresia</th>
+                <td>{{ entity[14] }}</td>
+            </tr>
+             <tr>
+                <th>Ingresado Por</th>
+                <td>{{ entity[15] }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a class="btn btn-primary "href="{{ path('cliente') }}">
+            Ver todos
+        </a>
+    </li>
+    <li>
+        
+    </li>
+    
+</ul>
+{% endblock %}

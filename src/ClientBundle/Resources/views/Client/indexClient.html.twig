@@ -63,8 +63,17 @@
                     {% endfor %}
                     </ul>
                 </td>#}
-                <td>{{cliente[14]}}</td>
-                <td>{{cliente[15]}}</td>
+                {% if cliente[14] is defined %}
+                    <td>{{cliente[14]}}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+
+                {% if cliente[15] is defined %}
+                    <td>{{cliente[15]}}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
                 
             </tr>
         {% endfor %}

@@ -33,8 +33,112 @@ class ClientController extends Controller
         $stmt->execute();
         $res = $stmt->fetchAll();
 
-        dump($res);
-        die();
+        $cliente = $res[0];
+        $entity = [];
+        $id = $cliente["id"];
+        $membresia_id = $cliente["tipo_membresia_id"];
+        dump($id);
+        $sqlCorreo = " 
+            SELECT  correo_electronico 
+            FROM correo
+            WHERE cliente_id = ?
+            ";
+
+        $sqlTelefono = " 
+            SELECT numero_telefono 
+            FROM telefono t
+            WHERE cliente_id = ?
+            ";
+
+        $sqlDireccion = " 
+            SELECT  direccion 
+            FROM direccion
+            WHERE cliente_id = ?
+            ";
+
+        $sqlMembresia = " 
+            SELECT  tipo_membresia 
+            FROM tipo_membresia
+            WHERE id = ?
+            ";
+
+         $sqlUsuario = " 
+            SELECT username 
+            FROM usuario u
+            INNER JOIN client c on u.id = c.usuario_id
+            WHERE c.id = ?
+            ";
+            //obtener correos
+            $em = $this->getDoctrine()->getManager();
+            $stmt = $em->getConnection()->prepare($sqlCorreo);
+            $stmt->bindValue(1, $id );
+            $stmt->execute();
+            $correos = $stmt->fetchAll();
+            //obtener direcciones
+            $stmt = $em->getConnection()->prepare($sqlDireccion);
+            $stmt->bindValue(1, $id );
+            $stmt->execute();
+            $direcciones = $stmt->fetchAll();
+            //obtener telefonos
+            $stmt = $em->getConnection()->prepare($sqlTelefono);
+            $stmt->bindValue(1, $id);
+            $stmt->execute();
+            $telefonos = $stmt->fetchAll();
+            //obtener membresia
+            $stmt = $em->getConnection()->prepare($sqlMembresia);
+            $stmt->bindValue(1, $membresia_id );
+            $stmt->execute();
+            $membresia = $stmt->fetchAll();
+            //obtener usuario
+            $stmt = $em->getConnection()->prepare($sqlUsuario);
+            $stmt->bindValue(1, $id );
+            $stmt->execute();
+            $usuario = $stmt->fetchAll();
+
+            $entity[] = $id;
+            $entity[] = $cliente["nit"];
+            $entity[] = $cliente["frecuente"];
+            $entity[] = $cliente["nombres"];
+            $entity[] = $cliente["apellidos"];
+            $entity[] = $cliente["estado_civil"];
+            $entity[] = $cliente["foto_cliente"];
+            $entity[] = $cliente["sexo"];
+            $entity[] = $cliente["nacionalidad"];
+            $entity[] = $cliente["twitter_username"];
+            $entity[] = $cliente["fecha_nacimiento"];
+            if ($correos) {
+                $corr = [];
+                foreach($correos as $mail) {
+                    $corr[] = $mail["correo_electronico"];
+                }
+                $entity[] = $corr;
+            }
+            if ($direcciones) {
+                $dirs = [];
+                foreach($direcciones as $adress) {
+                    $dirs[] = $adress["direccion"];
+                }
+                $entity[] = $dirs;
+            }
+            if ($telefonos) {
+                $tels = [];
+                foreach($telefonos as $telefono) {
+                    $tels[] = $telefono["numero_telefono"];
+                }
+                $entity[] = $tels;
+            }
+            if ($membresia) {
+                $entity[] = $membresia[0]["tipo_membresia"];
+            }
+            if ($usuario) {
+                $entity[] = $usuario[0]["username"];
+            }
+
+        
+        return $this->render('ClientBundle:Client:showClient.html.twig', [
+            'entity' => $entity,
+        ]);
+        
     }
 
     /**
@@ -489,7 +593,7 @@ class ClientController extends Controller
             ]);
        
     }
-    
+
     /**
      * Edits an existing client entity.
      *
