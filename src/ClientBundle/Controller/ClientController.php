@@ -546,6 +546,7 @@ class ClientController extends Controller
      */
     public function editAction($id)
     {
+
         $em = $this->getDoctrine()->getManager();
 
         $sql = " 
@@ -563,7 +564,10 @@ class ClientController extends Controller
         foreach($res as $entity){
             $client = new Client();
             $client->setId($entity["id"]);
-            $client->setFechaNacimiento($entity["fecha_nacimiento"]);
+
+            $client->setFechaNacimiento(
+                new \DateTime($entity["fecha_nacimiento"]));
+
             $client->setNit($entity["nit"]);
             $client->setFrecuente($entity["frecuente"]);
             $client->setNombres($entity["nombres"]);
@@ -574,19 +578,19 @@ class ClientController extends Controller
             $client->setDpi($entity["dpi"]);
             $client->setNacionalidad($entity["nacionalidad"]);
             $client->setTwitterUsername($entity["twitter_username"]);
-            $client->setImageFile($entity["foto_cliente"]);
+            $client->setFotoCliente($entity["foto_cliente"]);
             $entities[] = $client;
 
         }
         $entity = $entities[0];
-       
+      
 
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
         return $this->render('ClientBundle:Client:editClient.html.twig', 
             [
-              'entity'      => $entity,
+            'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
 
@@ -597,12 +601,13 @@ class ClientController extends Controller
     /**
      * Edits an existing client entity.
      *
-     * @Route("/{id}", name="client_update")
+     * @Route("/{id}/update", name="client_update")
      * @Method("PUT")
      * @Template("ClientBundle:Client:editClient.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
+        try {
         $sql = " 
             SELECT  *
             FROM client
@@ -618,7 +623,7 @@ class ClientController extends Controller
         foreach($res as $entity){
             $client = new Client();
             $client->setId($entity["id"]);
-            $client->setFechaNacimiento($entity["fecha_nacimiento"]);
+            $client->setFechaNacimiento( new \DateTime($entity["fecha_nacimiento"]));
             $client->setNit($entity["nit"]);
             $client->setFrecuente($entity["frecuente"]);
             $client->setNombres($entity["nombres"]);
@@ -629,7 +634,7 @@ class ClientController extends Controller
             $client->setDpi($entity["dpi"]);
             $client->setNacionalidad($entity["nacionalidad"]);
             $client->setTwitterUsername($entity["twitter_username"]);
-            $client->setImageFile($entity["foto_cliente"]);
+            $client->setFotoCliente($entity["foto_cliente"]);
             $entities[] = $client;
 
         }
@@ -643,23 +648,23 @@ class ClientController extends Controller
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
-
+      
         if ($editForm->isValid()) {
 
             $data = $editForm->getData();
-            $fechaNacimiento = $data['fechaNacimiento'];
-            $nit = $data['nit'];
-            $frecuente = $data['frecuente'];
-            $nombres = $data['nombres'];
-            $apellidos = $data['apellidos'];
-            $estadoCivil = $data['estadoCivil'];
-            $sexo = $data['sexo'];
-            $profesion = $data['profesion'];
-            $dpi = $data['dpi'];
-            $nacionalidad = $data['nacionalidad'];
-            $twitterUsername = $data['twitterUsername'];
-            $imagen = $data['imageFile'];
-           
+            $fechaNacimiento = $data->getFechaNacimiento();
+            $nit = $data->getNit();
+            $frecuente = $data->getFrecuente();
+            $nombres = $data->getNombres();
+            $apellidos = $data->getApellidos();
+            $estadoCivil = $data->getEstadoCivil();
+            $sexo = $data->getSexo();
+            $profesion = $data->getProfesion();
+            $dpi = $data->getDpi();
+            $nacionalidad = $data->getNacionalidad();
+            $twitterUsername = $data->getTwitterUserName();
+            $imagen = $data->getFotoCliente();
+
             $em = $this->getDoctrine()->getManager();
             $sql = " 
                 UPDATE  client
@@ -672,17 +677,17 @@ class ClientController extends Controller
                 foto_cliente = ?,
                 sexo = ?,
                 profesion = ?,
-                dpi = ?
+                dpi = ?,
                 nacionalidad = ?,
-                twitter_username = ?,
-                Where id = ?
+                twitter_username = ?
+                WHERE id = ?
                 ";
 
             $em = $this->getDoctrine()->getManager();
             $stmt = $em->getConnection()->prepare($sql);
-            $stmt->bindValue(1, $fechaNacimiento);
+            $stmt->bindValue(1, $fechaNacimiento, 'datetime');
             $stmt->bindValue(2, $nit);
-            $stmt->bindValue(3, $frecuente);
+            $stmt->bindValue(3, $frecuente, 'boolean');
             $stmt->bindValue(4, $nombres);
             $stmt->bindValue(5, $apellidos);
             $stmt->bindValue(6, $estadoCivil);
@@ -694,9 +699,15 @@ class ClientController extends Controller
             $stmt->bindValue(12, $twitterUsername);
             $stmt->bindValue(13, $id);
             $stmt->execute();
-           
+
             return $this->redirect($this->generateUrl('client_edit', array('id' => $id)));
         }
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+          dump($e);
+          die();
+        }
+
          return array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
@@ -721,5 +732,49 @@ class ClientController extends Controller
         $form->add('submit', 'submit', array('label' => 'Actualizar', 'attr' => ['class' => 'btn btn-primary']));
 
         return $form;
+    }
+
+     /**
+     * Deletes a Correo entity.
+     *
+     * @Route("/{id}/delete", name="client_delete")
+     * @Method("DELETE")
+     */
+    public function deleteAction(Request $request, $id)
+    {
+        $form = $this->createDeleteForm($id);
+        $form->handleRequest($request);
+;
+        if ($form->isValid()) {
+            $sql = " 
+                DELETE FROM client
+                WHERE id = ?
+                ";
+
+            $em = $this->getDoctrine()->getManager();
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->bindValue(1, $id);
+            $stmt->execute();
+        }
+
+        return $this->redirect($this->generateUrl('cliente'));
+    }
+
+
+      /**
+     * Creates a form to delete a Correo entity by id.
+     *
+     * @param mixed $id The entity id
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createDeleteForm($id)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('client_delete', array('id' => $id)))
+            ->setMethod('DELETE')
+            ->add('submit', 'submit', array('label' => 'Eliminar','attr' => ['class' => 'btn btn-danger']))
+            ->getForm()
+        ;
     }
 }

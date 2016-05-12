@@ -16,7 +16,7 @@ class ClientType extends AbstractType
 
     private $camposDinamicos;
 
-    public function __construct(EntityManager $entityManager, array $camposDinamicos)
+    public function __construct(EntityManager $entityManager, array $camposDinamicos = array())
     {
         $this->collection = [];
         $em = $entityManager;
@@ -56,7 +56,7 @@ class ClientType extends AbstractType
         ])
         ->add('frecuente', 'checkbox', [
             'label' => 'Es cliente frecuente',
-            'required' => true,
+            'required' => false,
         ])
         ->add('nombres', 'text', [
             'label' => 'Nombre/s',
@@ -141,7 +141,7 @@ class ClientType extends AbstractType
         ->add('nacionalidad')
         ->add('imageFile', 'file', [
             'label' => 'Foto del Cliente',
-            'required' => true,
+            'required' => false,
         ])
         ->add('twitterUsername', 'text', [
             'label' => 'Usuario de Twitter',

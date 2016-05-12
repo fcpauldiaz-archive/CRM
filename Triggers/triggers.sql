@@ -94,7 +94,7 @@ create or replace function nit_limit()
  $$ LANGUAGE plpgsql;
 
  create trigger nit_trigger
-before insert 
+before insert or update
 on client
 for each row 
 execute procedure nit_limit();
@@ -105,15 +105,15 @@ create or replace function dpi_limit()
  RETURNS "trigger" AS
  $$	
  BEGIN
-	if length(New.dpi)<>14 THEN
-		RAISE EXCEPTION 'Numero de dpi debe ser de 14 digitos';
+	if length(New.dpi)<>13 THEN
+		RAISE EXCEPTION 'Numero de dpi debe ser de 13 digitos';
 	END IF;
    Return NEW;
  END;
  $$ LANGUAGE plpgsql;
 
  create trigger dpi_trigger
-before insert 
+before insert or update
 on client
 for each row 
 execute procedure dpi_limit();
@@ -135,7 +135,7 @@ create or replace function direccion_limit()
  $$ LANGUAGE plpgsql;
 
  create trigger direccion_trigger
-before insert 
+before insert or update
 on direccion
 for each row 
 execute procedure direccion_limit();

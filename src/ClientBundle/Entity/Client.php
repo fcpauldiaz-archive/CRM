@@ -417,5 +417,21 @@ class Client
         // when displaying uploaded doc/image in the view.
         return 'uploads';
     }
+
+    public function getCorreo()
+    {
+        return $this->correo;
+    }
+
+    public function getTelefono()
+    {
+        return $this->telefono;
+    }
+
+    public function getDireccion()
+    {
+        return $this->direccion;
+    }
+    
 }
 
