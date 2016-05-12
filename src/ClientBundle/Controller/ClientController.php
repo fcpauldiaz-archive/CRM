@@ -32,7 +32,13 @@ class ClientController extends Controller
     public function newAction(Request $request)
     {
         $entity = new Client();
-        $form   = $this->createForm(new ClientType($this->getDoctrine()->getManager()));
+
+        $camposDinamicos = $this->getNombreTipoColumnas();
+
+        $form   = $this->createForm(
+            new ClientType($this->getDoctrine()->getManager(), $camposDinamicos)
+        );
+
         $form->handleRequest($request);
         if (!$form->isValid()){
             return $this->render('ClientBundle:Client:newClient.html.twig',
@@ -42,8 +48,9 @@ class ClientController extends Controller
                 ]
             );
         }
+
         $data = $form->getData();
-        
+
         $fechaNacimiento = $data['fechaNacimiento'];
         $nit = $data['nit'];
         $frecuente = $data['frecuente'];
@@ -171,4 +178,67 @@ class ClientController extends Controller
 
     }
 
+    private function getNombreTipoColumnas()
+    {
+        $conexionDB = $this->get('database_connection'); // Conexión con la BD
+        $sql = "SELECT * FROM campo_dinamico";
+        $stmt = $conexionDB->prepare($sql);
+        $stmt->execute();
+
+        $camposDinamicos = $stmt->fetchAll();
+
+        $returnArray = [];
+
+        foreach ($camposDinamicos as $campo) {
+            // processTipoColumna
+
+            $tipo = $this->getTipoColumnaById($campo['tipo_columna_id']);
+
+            $returnArray[] = [
+                'nombre' => $campo['nombre'],
+                'tipo' => $this->processTipoColumna($tipo)
+            ];
+        }
+
+        return $returnArray;
+    }
+
+    private function getTipoColumnaById($id)
+    {
+        $conexionDB = $this->get('database_connection');
+        $sql = "SELECT tipo FROM tipo_columna  WHERE id = ?";
+        $stmt = $conexionDB->prepare($sql);
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+
+        return $stmt->fetchAll()[0]['tipo'];
+    }
+
+    private function processTipoColumna($tipo)
+    {
+        $returnTipo = "";
+
+        switch ($tipo) {
+            case 'INTEGER':
+                $returnTipo = 'number';
+                break;
+            case 'VARCHAR(50)':
+                $returnTipo = 'text';
+                break;
+            case 'DOUBLE PRECISION':
+                $returnTipo = 'number';
+                break;
+            case 'DATE':
+                $returnTipo = 'date';
+                break;
+            case 'BOOLEAN':
+                $returnTipo = 'checkbox';
+                break;
+            default:
+                throw new \LogicException('Tipo de columna no reconocido');
+                break;
+        }
+
+        return $returnTipo;
+    }
 }
