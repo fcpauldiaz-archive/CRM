@@ -607,6 +607,7 @@ class ClientController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
+        try {
         $sql = " 
             SELECT  *
             FROM client
@@ -700,6 +701,11 @@ class ClientController extends Controller
             $stmt->execute();
 
             return $this->redirect($this->generateUrl('client_edit', array('id' => $id)));
+        }
+        }
+        catch (\Doctrine\DBAL\DBALException $e) {
+          dump($e);
+          die();
         }
 
          return array(
