@@ -49,7 +49,7 @@ class DireccionController extends Controller
     public function newAction(Request $request)
     {
         $entity = new Direccion();
-        $form   =  $this->createForm(new DireccionType($this->getDoctrine()->getManager()));
+        $form   =  $this->createForm(new DireccionType($this->getDoctrine()->getManager(),true));
         $form->handleRequest($request);
         if (!$form->isValid()){
             return $this->render('Modulo1Bundle:Direccion:newDireccion.html.twig',

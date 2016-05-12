@@ -48,7 +48,7 @@ class TelefonoController extends Controller
     public function newAction(Request $request)
     {
         $entity = new Telefono();
-        $form   = $this->createForm(new TelefonoType($this->getDoctrine()->getManager()));
+        $form   = $this->createForm(new TelefonoType($this->getDoctrine()->getManager(),true));
         $form->handleRequest($request);
         if (!$form->isValid()){
             return $this->render('Modulo1Bundle:Telefono:newTelefono.html.twig',

@@ -7,51 +7,51 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\Producto;
-use Modulo1Bundle\Form\ProductoType;
+use AppBundle\Entity\Venta;
+use Modulo1Bundle\Form\VentasType;
 /**
- * Producto controller.
+ * Direccion controller.
  *
- * @Route("/producto")
+ * @Route("/ventas")
  */
-class ProductoController extends Controller
+class VentasController extends Controller
 {
-	/**
-     * Lists all producto entities.
+   /**
+     * Lists all ventas entities.
      *
-     * @Route("/", name="producto")
+     * @Route("/", name="ventas")
      * @Method("GET")
      */
     public function indexAction()
     {
          $sql = " 
             SELECT  *
-            FROM producto
+            FROM ventas
             ";
 
         $em = $this->getDoctrine()->getManager();
         $stmt = $em->getConnection()->prepare($sql);
         $stmt->execute();
         $res = $stmt->fetchAll();
-        return $this->render('Modulo1Bundle:Producto:indexProducto.html.twig',
+        return $this->render('Modulo1Bundle:Ventas:indexVentas.html.twig',
              array(
             'entities' => $res,
         ));
     }
-    /**
-     * Displays a form to create a new Producto entity.
+     /**
+     * Displays a form to create a new Ventas entity.
      *
-     * @Route("/new", name="producto_new")
+     * @Route("/new", name="venta_new")
      * 
      * 
      */
     public function newAction(Request $request)
     {
-        $entity = new Producto();
-        $form   =  $this->createForm(new ProductoType(), $entity);
+        $entity = new Venta();
+        $form   =  $this->createForm(new VentasType($this->getDoctrine()->getManager(),true));
         $form->handleRequest($request);
         if (!$form->isValid()){
-            return $this->render('Modulo1Bundle:Producto:newProducto.html.twig',
+            return $this->render('Modulo1Bundle:Ventas:newVenta.html.twig',
                  [
                     'entity' => $entity,
                     'form'   => $form->createView(),
@@ -59,37 +59,40 @@ class ProductoController extends Controller
             );
         }
         $sql = " 
-            INSERT INTO producto
-            VALUES (nextval('producto_id_seq'), ?)
+            INSERT INTO ventas
+            VALUES (nextval('ventas_id_seq'), ?, ?,?,?)
             ";
 
         $em = $this->getDoctrine()->getManager();
         $stmt = $em->getConnection()->prepare($sql);
-        $stmt->bindValue(1, $form->getData()->getProducto());
+        $stmt->bindValue(1, $form->getData()['producto']);
+        $stmt->bindValue(2, $form->getData()['cantidad']);
+        $stmt->bindValue(3, $form->getData()['total']);
+        $stmt->bindValue(4, $form->getData()['cliente']);
         $stmt->execute();
         $res = $stmt->fetchAll();
         $sql = " 
-            Select currval('producto_id_seq')
-            FROM producto
+            Select currval('ventas_id_seq')
+            FROM ventas
             LIMIT 1;
             ";
         $stmt = $em->getConnection()->prepare($sql);
         $stmt->execute();
         $res = $stmt->fetchAll();
-        return $this->redirect($this->generateUrl('producto_show', array('id' => $res[0]["currval"])));
+        return $this->redirect($this->generateUrl('venta_show', array('id' => $res[0]["currval"])));
     }
     /**
-     * Finds and displays a Producto entity.
+     * Finds and displays a ventas entity.
      *
-     * @Route("/{id}", name="producto_show")
+     * @Route("/{id}", name="venta_show")
      * @Method("GET")
-     * @Template("Modulo1Bundle:Producto:showProducto.html.twig")
+     * @Template("Modulo1Bundle:Ventas:showVentas.html.twig")
      */
     public function showAction($id)
     {
          $sql = " 
             SELECT  *
-            FROM producto
+            FROM ventas
             WHERE id = ?
             ";
 
@@ -106,10 +109,10 @@ class ProductoController extends Controller
             'delete_form' => $deleteForm->createView(),
         );
     }
-     /**
-     * Displays a form to edit an existing Producto entity.
+    /**
+     * Displays a form to edit an existing Ventas entity.
      *
-     * @Route("/{id}/edit", name="producto_edit")
+     * @Route("/{id}/edit", name="venta_edit")
      * @Method("GET")
      *
      */
@@ -119,7 +122,7 @@ class ProductoController extends Controller
 
         $sql = " 
             SELECT  *
-            FROM producto
+            FROM ventas
             Where id = ?
             ";
 
@@ -130,10 +133,14 @@ class ProductoController extends Controller
         $res = $stmt->fetchAll();
         $entities = [];
         foreach($res as $entity){
-            $producto = new Producto();
-            $producto->setId($entity["id"]);
-            $producto->setProducto($entity["producto"]);
-            $entities[] = $producto;
+            $ventas = new Venta();
+            $ventas->setId($entity["id"]);
+            $ventas->setProducto($entity["producto_id"]);
+            $ventas->setCliente($entity["cliente_id"]);
+            $ventas->setTotal($entity["total"]);
+            $ventas->setCantidad($entity["cantidad"]);
+           // $correo->setCliente($entity["cliente_id"]);
+            $entities[] = $ventas;
 
         }
         $entity = $entities[0];
@@ -142,7 +149,7 @@ class ProductoController extends Controller
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        return $this->render('Modulo1Bundle:Producto:editProducto.html.twig', 
+        return $this->render('Modulo1Bundle:Ventas:editVentas.html.twig', 
             [
               'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
@@ -151,17 +158,17 @@ class ProductoController extends Controller
             ]);
        
     }
-     /**
-    * Creates a form to edit a Direccion entity.
+    /**
+    * Creates a form to edit a Ventas entity.
     *
-    * @param Producto $entity The entity
+    * @param Ventas $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(Producto $entity)
+    private function createEditForm(Ventas $entity)
     {
-        $form = $this->createForm(new ProductoType($this->getDoctrine()->getManager()), $entity, array(
-            'action' => $this->generateUrl('producto_update', array('id' => $entity->getId())),
+        $form = $this->createForm(new VentasType($this->getDoctrine()->getManager()), $entity, array(
+            'action' => $this->generateUrl('venta_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -172,15 +179,15 @@ class ProductoController extends Controller
     /**
      * Edits an existing Correo entity.
      *
-     * @Route("/{id}", name="producto_update")
+     * @Route("/{id}", name="venta_update")
      * @Method("PUT")
-     * @Template("Modulo1Bundle:Producto:editProducto.html.twig")
+     * @Template("Modulo1Bundle:Ventas:editVentas.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
         $sql = " 
             SELECT  *
-            FROM producto
+            FROM ventas
             Where id = ?
             ";
 
@@ -189,19 +196,24 @@ class ProductoController extends Controller
         $stmt->bindValue(1, $id);
         $stmt->execute();
         $res = $stmt->fetchAll();
-        $entities = [];
+       $entities = [];
         foreach($res as $entity){
-            $producto = new Producto();
-            $producto->setId($entity["id"]);
-            $producto->setProducto($entity["producto"]);
-            $entities[] = $producto;
+            $ventas = new Venta();
+            $ventas->setId($entity["id"]);
+            $ventas->setProducto($entity["producto_id"]);
+            $ventas->setCliente($entity["cliente_id"]);
+            $ventas->setTotal($entity["total"]);
+            $ventas->setCantidad($entity["cantidad"]);
+           // $correo->setCliente($entity["cliente_id"]);
+            $entities[] = $ventas;
 
         }
         $entity = $entities[0];
        
+       
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Producto entity.');
+            throw $this->createNotFoundException('Unable to find Correo entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -209,23 +221,29 @@ class ProductoController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-
-             $producto = $request->request->get('producto')['producto'];
+            $data = $editForm->getData();
+            $producto = $data['producto'];
+            $cantidad = $data['cantidad'];
+            $total = $data['total'];
+            $cliente = $data['cliente'];
            
             $em = $this->getDoctrine()->getManager();
             $sql = " 
-                UPDATE  producto
-                SET producto = ?
+                UPDATE  ventas
+                SET producto =?,cantidad = ?,total = ?, cliente = ?
                 Where id = ?
                 ";
 
             $em = $this->getDoctrine()->getManager();
             $stmt = $em->getConnection()->prepare($sql);
             $stmt->bindValue(1, $producto);
-            $stmt->bindValue(2, $id);
+            $stmt->bindValue(2, $cantidad);
+            $stmt->bindValue(3, $total);
+            $stmt->bindValue(4, $cliente);
+            $stmt->bindValue(5, $id);
             $stmt->execute();
            
-            return $this->redirect($this->generateUrl('producto_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('venta_edit', array('id' => $id)));
         }
 
         return array(
@@ -235,9 +253,9 @@ class ProductoController extends Controller
         );
     }
     /**
-     * Deletes a producto entity.
+     * Deletes a ventas entity.
      *
-     * @Route("/{id}", name="producto_delete")
+     * @Route("/{id}", name="venta_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -247,7 +265,7 @@ class ProductoController extends Controller
 ;
         if ($form->isValid()) {
             $sql = " 
-                DELETE FROM producto
+                DELETE FROM ventas
                 WHERE id = ?
                 ";
 
@@ -257,10 +275,10 @@ class ProductoController extends Controller
             $stmt->execute();
         }
 
-        return $this->redirect($this->generateUrl('producto'));
+        return $this->redirect($this->generateUrl('venta'));
     }
      /**
-     * Creates a form to delete a Direccion entity by id.
+     * Creates a form to delete a Venta entity by id.
      *
      * @param mixed $id The entity id
      *
@@ -269,7 +287,7 @@ class ProductoController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('producto_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('venta_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Eliminar','attr' => ['class' => 'btn btn-danger']))
             ->getForm()

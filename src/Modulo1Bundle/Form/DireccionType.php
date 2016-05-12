@@ -12,8 +12,9 @@ class DireccionType extends AbstractType
 {
    
     private $collection;
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, $type = false)
     {
+        $this->tipo = $type;
         $this->collection = [];
         $em = $entityManager;
         $sql = " 
@@ -37,17 +38,33 @@ class DireccionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-        ->add('cliente', 'choice', [
-                'choices' => $this->collection,
-                'label' => false,
-                'empty_value' => 'Escoja un cliente',
-                'required' => false,
-                'attr' => [
-                    'class' => 'select2'
-                ],
-                'disabled' => true,
-        ])
+        if ($this->tipo){
+            $builder
+                ->add('cliente', 'choice', [
+                        'choices' => $this->collection,
+                        'label' => false,
+                        'empty_value' => 'Escoja un cliente',
+                        'required' => false,
+                        'attr' => [
+                            'class' => 'select2'
+                        ],
+                       
+                ]);
+        }
+        if (!$this->tipo) {
+            $builder
+                ->add('cliente', 'choice', [
+                        'choices' => $this->collection,
+                        'label' => false,
+                        'empty_value' => 'Escoja un cliente',
+                        'required' => false,
+                        'attr' => [
+                            'class' => 'select2'
+                        ],
+                        'disabled' => true,
+                ]);
+        }
+         $builder
         ->add('direccion', 'text', [
             'label' => 'Direccion',
             'required' => true,
