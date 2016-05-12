@@ -18,6 +18,7 @@
                 <th>Twitter Username</th>
                 <th>Fecha Nacimiento</th>
                 <th>Correos</th>
+                <th>Direccón</th>
                 <th>Telefonos</th>
                 <th>Membresia</th>
                 <th>Creado Por</th>
@@ -34,25 +35,37 @@
                 <td> {{ cliente[3] }}</td>
                 <td> {{ cliente[4] }}</td>
                 <td> {{ cliente[5] }}</td>
-                <td> {{ cliente[6] }}</td>
+                <td> 
+                    <img src="{{ asset('uploads/'+cliente[6])}}">
+                    </img>
+                </td>
                 <td> {{ cliente[7] }}</td>
                 <td> {{ cliente[8] }}</td>
                 <td> {{ cliente[9] }}</td>
                 <td> {{ cliente[10] }}</td>
-                <td> {% for correo in cliente[11] %}
+                <td> 
                     <ul>
+                    {% for correo in cliente[11] %}
+                    
                         <li>{{correo}}</li>
-                    <ul>
+                    {% endfor %}
+                    </ul>
+
                 </td>
-                <td> {% for direccion in cliente[12] %}
+                <td> 
                     <ul>
+                    {% for direccion in cliente[12] %}
+                    
                         <li>{{direccion}}</li>
-                    <ul>
+                    {% endfor %}
+                    </ul>
                 </td>
-                 <td> {% for telefono in cliente[12] %}
+                 <td> 
                     <ul>
+                    {% for telefono in cliente[13] %}
                         <li>{{telefono}}</li>
-                    <ul>
+                    {% endfor %}
+                    </ul>
                 </td>
                 <td>{{cliente[14]}}</td>
                 <td>{{cliente[15]}}</td>
@@ -69,4 +82,4 @@
             </a>
         </li>
     </ul>
-    {% endblock %}
+{% endblock %}

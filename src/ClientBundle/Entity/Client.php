@@ -79,7 +79,9 @@ class Client
         );
 
         // guardar el nombre en la base de datos
-        $this->fotoCliente = $this->getUploadRootDir();
+        $this->fotoCliente = $this
+            ->getImageFile()
+            ->getClientOriginalName();
 
         // ya no se necesita
         $this->file = null;
