@@ -32,5 +32,13 @@ ALTER TABLE client
     FOREIGN KEY (usuario_id)
     REFERENCES usuario (id);
 
+ALTER TABLE client 
+    ADD CONSTRAINT UNIQUE_NIT UNIQUE (nit);
+    
+ALTER TABLE client 
+    ADD CONSTRAINT UNIQUE_DPI UNIQUE (dpi);
+
 CREATE INDEX IDX_TIPO_MEMBRESIA ON client (tipo_membresia_id);
 CREATE INDEX IDX_USUARIO_ID ON client (usuario_id);
+CREATE INDEX IDX_CLIENT_ID ON client (id);
+

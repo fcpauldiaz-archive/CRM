@@ -102,10 +102,34 @@ class VentasController extends Controller
         $stmt->bindValue(1, $id);
         $stmt->execute();
         $res = $stmt->fetchAll();
+       
+          $sql = " 
+            SELECT  producto
+            FROM producto
+            WHERE id = ?
+            ";
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $res[0]["producto_id"]);
+        $stmt->execute();
+        $producto = $stmt->fetchAll()[0]["producto"];
+
+          $sql = " 
+            SELECT  nombres, apellidos
+            FROM client
+            WHERE id = ?
+            ";
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $res[0]["client_id"]);
+        $stmt->execute();
+        $cliente = $stmt->fetchAll();
+        $cliente = $cliente[0]["nombres"].' '.$cliente[0][
+        "apellidos"];
 
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
+            'producto' => $producto,
+            'cliente' => $cliente,
             'entity'      => $res,
             'delete_form' => $deleteForm->createView(),
         );
