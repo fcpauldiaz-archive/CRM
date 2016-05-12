@@ -1,0 +1,15 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Crear Telefono</h1>
+
+    {{ form(form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('telefono') }}">
+            Regresar
+        </a>
+    </li>
+</ul>
+{% endblock %}

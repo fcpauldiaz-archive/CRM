@@ -49,7 +49,7 @@ class DireccionController extends Controller
     public function newAction(Request $request)
     {
         $entity = new Direccion();
-        $form   = $this->createForm(new DireccionType(), $entity);
+        $form   =  $this->createForm(new DireccionType($this->getDoctrine()->getManager()));
         $form->handleRequest($request);
         if (!$form->isValid()){
             return $this->render('Modulo1Bundle:Direccion:newDireccion.html.twig',
@@ -61,12 +61,13 @@ class DireccionController extends Controller
         }
         $sql = " 
             INSERT INTO direccion
-            VALUES (nextval('direccion_id_seq'), ?, null)
+            VALUES (nextval('direccion_id_seq'), ?, ?)
             ";
 
         $em = $this->getDoctrine()->getManager();
         $stmt = $em->getConnection()->prepare($sql);
-        $stmt->bindValue(1, $form->getData()->getDireccion());
+        $stmt->bindValue(1, $form->getData()['direccion']);
+        $stmt->bindValue(2, $form->getData()['cliente']);
         $stmt->execute();
         $res = $stmt->fetchAll();
         $sql = " 
@@ -163,7 +164,7 @@ class DireccionController extends Controller
     */
     private function createEditForm(Direccion $entity)
     {
-        $form = $this->createForm(new DireccionType(), $entity, array(
+        $form = $this->createForm(new DireccionType($this->getDoctrine()->getManager()), $entity, array(
             'action' => $this->generateUrl('direccion_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
