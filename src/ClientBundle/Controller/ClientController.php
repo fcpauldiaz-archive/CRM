@@ -731,7 +731,7 @@ class ClientController extends Controller
      /**
      * Deletes a Correo entity.
      *
-     * @Route("/{id}", name="client_delete")
+     * @Route("/{id}/delete", name="client_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
