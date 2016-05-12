@@ -409,7 +409,6 @@ class ClientController extends Controller
         return $returnTipo;
     }
 
-<<<<<<< HEAD
     private function insertCampoDinamico($valor, $campo_dinamico_id, $cliente_id)
     {
         $conexionDB = $this->get('database_connection');
@@ -433,7 +432,7 @@ class ClientController extends Controller
 
         return $stmt->fetchAll()[0]['id'];
     }
-=======
+
     /**
      * Displays a form to edit an existing client entity.
      *
@@ -619,8 +618,4 @@ class ClientController extends Controller
 
         return $form;
     }
-
-
-
->>>>>>> 514dd9e925aa943d74c12941719dd472d2b3023e
 }
