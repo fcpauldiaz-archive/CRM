@@ -8,9 +8,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityManager;
 use ClientBundle\Entity\Client;
 
-class DireccionType extends AbstractType
+
+class TelefonoType extends AbstractType
 {
-   
     private $collection;
     public function __construct(EntityManager $entityManager)
     {
@@ -27,8 +27,6 @@ class DireccionType extends AbstractType
         foreach($res as $r){
            $this->collection[$r["id"]] = $r["nombres"].' '.$r["apellidos"];
         }
-        
-
     }
 
     /**
@@ -47,8 +45,8 @@ class DireccionType extends AbstractType
                     'class' => 'select2'
                 ]
         ])
-        ->add('direccion', 'text', [
-            'label' => 'Direccion',
+        ->add('numeroTelefono', 'text', [
+            'label' => 'Telefono',
             'required' => true,
         ])
         ->add('submit', 'submit', [
@@ -74,6 +72,6 @@ class DireccionType extends AbstractType
      */
     public function getName()
     {
-        return 'direccion';
+        return 'telefono';
     }
 }

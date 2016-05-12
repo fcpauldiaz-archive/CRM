@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Editar Telefono</h1>
+
+    {{ form(edit_form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a class="btn btn-primary" href="{{ path('telefono') }}">
+           Regresar
+        </a>
+    </li>
+    <li>
+    	  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalVerificacion">
+          Eliminar
+          </button>
+    </li>
+</ul>
+{% include 'Modulo1Bundle:Direccion:modal_verificacion.html.twig' %}
+{% endblock %}

@@ -12,9 +12,11 @@ use GeneralClientDataBundle\Form\CorreoClienteType as CorreoType;
 
 class ClientType extends AbstractType
 {
-   
     private $collection;
-    public function __construct(EntityManager $entityManager)
+
+    private $camposDinamicos;
+
+    public function __construct(EntityManager $entityManager, array $camposDinamicos)
     {
         $this->collection = [];
         $em = $entityManager;
@@ -29,6 +31,8 @@ class ClientType extends AbstractType
         foreach($res as $r){
            $this->collection[$r["id"]] = $r["tipo_membresia"] ;
         }
+
+        $this->camposDinamicos = $camposDinamicos;
     }
 
     /**
@@ -63,7 +67,7 @@ class ClientType extends AbstractType
             'required' => true,
         ])
         ->add('estadoCivil', 'text', [
-            'label' => 'estado Civil',
+            'label' => 'Estado Civil',
             'required' => true,
         ])
         ->add('sexo')
@@ -145,8 +149,13 @@ class ClientType extends AbstractType
             'attr' => [
                 'placeholder' => 'Sin arroba'
             ]
-            ])
-        ->add('submit', 'submit', [
+        ]);
+
+        foreach ($this->camposDinamicos as $campo) {
+            $builder->add($campo['nombre'], $campo['tipo']);
+        }
+
+        $builder->add('submit', 'submit', [
                 'label' => 'Guardar',
                 'attr' => [
                     'class' => 'btn btn-primary btn-block',

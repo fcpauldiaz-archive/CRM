@@ -44,6 +44,7 @@ class CampoDinamicoController extends Controller
             $idTipoColumna = $stmt->fetchAll();
 
             /****    Query para verificar que no exista campo con ese nombre   ******/
+
             $sql = "SELECT * FROM campo_dinamico  WHERE nombre = ?";
             $stmt = $conexionDB->prepare($sql);
 
@@ -74,16 +75,54 @@ class CampoDinamicoController extends Controller
 
             $stmt->execute();
 
-            // dump($idTipoColumna);
-            // dump($formData);
-            // die();
+            return $this->redirect(
+                $this->generateUrl("modulo1_campodinamico_listar", [])
+            );
+
         } catch (Exception $e) {
             throw new \LogicException('Tipo de columna no reconocido');
         }
     }
 
-    public function campoDinamicoListAction()
+    /**
+     * @Template()
+     * @Route("listar/")
+     */
+    public function listarAction()
     {
-        
+        $conexionDB = $this->get('database_connection'); // Conexión con la BD
+        $sql = "SELECT * FROM campo_dinamico";
+        $stmt = $conexionDB->prepare($sql);
+        $stmt->execute();
+
+        $camposDinamicos = $stmt->fetchAll();
+
+        $returnArray = [];
+
+        foreach ($camposDinamicos as $campo) {
+            $returnArray[] = [
+                'id' => $campo['id'],
+                'nombre' => $campo['nombre'],
+                'tipo' => $this->getTipoColumnaById($campo['tipo_columna_id'])
+            ];
+        }
+
+        // dump($returnArray);
+        // die();
+
+        return [
+            'campos' => $returnArray
+        ];
+    }
+
+    private function getTipoColumnaById($id)
+    {
+        $conexionDB = $this->get('database_connection');
+        $sql = "SELECT tipo FROM tipo_columna  WHERE id = ?";
+        $stmt = $conexionDB->prepare($sql);
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+
+        return $stmt->fetchAll()[0]['tipo'];
     }
 }
