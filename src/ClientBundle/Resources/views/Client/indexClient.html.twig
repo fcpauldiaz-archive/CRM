@@ -12,14 +12,10 @@
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Estado Civil</th>
-                <th>Imagen</th>
                 <th>Sexo</th>
                 <th>Nacionalidad</th>
                 <th>Twitter Username</th>
                 <th>Fecha Nacimiento</th>
-                <th>Correos</th>
-                <th>Direccón</th>
-                <th>Telefonos</th>
                 <th>Membresia</th>
                 <th>Creado Por</th>
             </tr>
@@ -31,19 +27,19 @@
                    {{cliente[0]}}
                 </td>
                 <td> {{ cliente[1] }}</td>
-                <td> {{ cliente[2] }}</td>
+                <td> {{ cliente[2] ? 'Sí':'No' }}</td>
                 <td> {{ cliente[3] }}</td>
                 <td> {{ cliente[4] }}</td>
                 <td> {{ cliente[5] }}</td>
-                <td> 
-                    <img src="{{ asset('uploads/'+cliente[6])}}">
+                {#<td> 
+                    <img  height="150" width="150" src="{{ asset('uploads/'~cliente[6])}}">
                     </img>
-                </td>
+                </td>#}
                 <td> {{ cliente[7] }}</td>
                 <td> {{ cliente[8] }}</td>
                 <td> {{ cliente[9] }}</td>
                 <td> {{ cliente[10] }}</td>
-                <td> 
+                {#<td> 
                     <ul>
                     {% for correo in cliente[11] %}
                     
@@ -66,7 +62,7 @@
                         <li>{{telefono}}</li>
                     {% endfor %}
                     </ul>
-                </td>
+                </td>#}
                 <td>{{cliente[14]}}</td>
                 <td>{{cliente[15]}}</td>
                 
