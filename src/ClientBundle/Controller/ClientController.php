@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use ClientBundle\Entity\Client;
 use ClientBundle\Form\ClientType;
+use Endroid\Twitter\Twitter;
 
 /**
  * Client controller.
@@ -18,7 +19,8 @@ use ClientBundle\Form\ClientType;
 class ClientController extends Controller
 {
     /**
-     * @Route("/{id}", name="cliente_show")
+     * @Route("/{id}/show", name="cliente_show")
+     * @Method("GET")
      */
     public function showAction($id) 
     {
@@ -300,7 +302,7 @@ class ClientController extends Controller
     }
 
 
-	 /**
+     /**
      * Displays a form to create a new Client entity.
      *
      * @Route("/new", name="cliente_new")
@@ -344,6 +346,7 @@ class ClientController extends Controller
         $imagen = $data['imageFile'];
         $nacionalidad = $data['nacionalidad'];
         $twitterUsername = $data['twitterUsername'];
+        $updateTweets = $data['updateTweets'];
         $usuario = $this->getUser();
         $client = new Client();
         $client->setImageFile($imagen);
@@ -354,7 +357,6 @@ class ClientController extends Controller
             INSERT INTO client
             VALUES (
             nextval('client_id_seq'), 
-            :fecha,
             :nit,
             :frecuente,
             :nombres,
@@ -365,9 +367,12 @@ class ClientController extends Controller
             :profesion,
             :dpi,
             :nacion,
+            :twit,
             :tipo,
-            :usuario,
-            :twit
+            :fecha,
+            :usuario
+           
+            
             )
             ";
 
@@ -389,7 +394,21 @@ class ClientController extends Controller
         $stmt->bindValue("fecha", $fechaNacimiento, 'datetime');
         $stmt->bindValue("usuario", $usuario->getId());
 
-        $stmt->execute();
+        try {
+            $stmt->execute();
+        } catch (\Doctrine\DBAL\DBALException $e) {
+           $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+           $this->addFlash(
+            'error',
+            $error
+            );
+             return $this->render('ClientBundle:Client:newClient.html.twig',
+                 [
+                    'entity' => $entity,
+                    'form'   => $form->createView(),
+                ]
+            );
+        }
 
         $sql = " 
             Select currval('client_id_seq')
@@ -413,8 +432,21 @@ class ClientController extends Controller
             $stmt = $em->getConnection()->prepare($sql);
             $stmt->bindValue("direccion", $dir["d"]);
             $stmt->bindValue("cliente", $res[0]["currval"]);
-
-            $stmt->execute();
+            try {
+                $stmt->execute();
+            } catch (\Doctrine\DBAL\DBALException $e) {
+               $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+               $this->addFlash(
+                    'error',
+                    $error
+                );
+                 return $this->render('ClientBundle:Client:newClient.html.twig',
+                 [
+                    'entity' => $entity,
+                    'form'   => $form->createView(),
+                ]
+            );
+            }
         }
 
         $sql = " 
@@ -429,8 +461,21 @@ class ClientController extends Controller
             $stmt = $em->getConnection()->prepare($sql);
             $stmt->bindValue("correo", $mail["correoElectronico"]);
             $stmt->bindValue("cliente", $res[0]["currval"]);
-
-            $stmt->execute();
+            try {
+                $stmt->execute();
+            }catch (\Doctrine\DBAL\DBALException $e) {
+               $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+               $this->addFlash(
+                    'error',
+                    $error
+                );
+                 return $this->render('ClientBundle:Client:newClient.html.twig',
+                 [
+                    'entity' => $entity,
+                    'form'   => $form->createView(),
+                ]
+            );
+            }
         }
 
         $sql = " 
@@ -446,7 +491,23 @@ class ClientController extends Controller
             $stmt->bindValue("telefono", $phone["numeroTelefono"]);
             $stmt->bindValue("cliente", $res[0]["currval"]);
 
-            $stmt->execute();
+            try {
+
+                $stmt->execute();
+
+            }catch (\Doctrine\DBAL\DBALException $e) {
+               $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+               $this->addFlash(
+                    'error',
+                    $error
+                );
+                 return $this->render('ClientBundle:Client:newClient.html.twig',
+                 [
+                    'entity' => $entity,
+                    'form'   => $form->createView(),
+                ]
+            );
+            }
         }
 
         $formData = $form->getData();
@@ -477,7 +538,13 @@ class ClientController extends Controller
 
             $this->insertCampoDinamico($insertValue, $campo_dinamico_id, $cliente_id);
         }
-        die();
+
+        //guardar tweets del cliente
+        if ($updateTweets  == 1 && $twitterUsername != null){
+            $this->saveTweets($twitterUsername);
+        }
+
+       return $this->redirectToRoute('cliente');
     }
 
     private function getNombreTipoColumnas()
@@ -733,12 +800,16 @@ class ClientController extends Controller
             $stmt->bindValue(13, $id);
             $stmt->execute();
 
+            $this->get('session')->getFlashBag()->add('notice', 'Your message!');
             return $this->redirect($this->generateUrl('client_edit', array('id' => $id)));
         }
         }
         catch (\Doctrine\DBAL\DBALException $e) {
-          dump($e);
-          die();
+           $error = substr($e->getMessage(), strrpos($e->getMessage(), "ERROR"));
+           $this->addFlash(
+            'error',
+            $error
+        );
         }
 
          return array(
@@ -757,10 +828,7 @@ class ClientController extends Controller
     */
     private function createEditForm(Client $entity)
     {
-        $form = $this->createForm(
-                new ClientType($this->getDoctrine()->getManager(),
-                $this->getNombreTipoColumnas()
-            ), $entity, array(
+        $form = $this->createForm(new ClientType($this->getDoctrine()->getManager()), $entity, array(
             'action' => $this->generateUrl('client_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
@@ -780,7 +848,7 @@ class ClientController extends Controller
     {
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
-
+;
         if ($form->isValid()) {
             $sql = " 
                 DELETE FROM client
@@ -813,4 +881,134 @@ class ClientController extends Controller
             ->getForm()
         ;
     }
+
+    private function saveTweets($cliente){
+          $usuario = $this->getUser();
+        
+        $twitter = new Twitter(
+            "ADcfgE61LTgs6YU524t9yrU29", 
+            "Z7oggnEwWq4mdOj0oapaH9rteMzURlZFb61IkxEe024tjQrMFU", 
+            $this->getTwitterToken($usuario), 
+            $this->getTitterSecretToken($usuario));
+        // obtener tweets del usuario
+        // Twitter api retorna máximo 199 por request
+        // 3200 max en total
+        $cantidadMax = 1500;
+        $cantidadActual = 0;
+        $max_id = '';
+        $tweetsAcum = [];
+        while ($cantidadActual < $cantidadMax) {
+            if ($cantidadActual !=0 ){
+                $tweets = $twitter->getTimeline(array(
+                    'count' => 500,
+                    'max_id' => $max_id,
+                    'screen_name' => $cliente
+                ));
+            }else{
+                 $tweets = $twitter->getTimeline(array(
+                'count' => 500,
+                'screen_name' => $cliente
+            ));
+
+            }
+           
+            $cont = 0;
+            foreach ($tweets as $tweet) {
+                if ($cantidadActual != 0){
+                    if ($cont != 0){
+                        $tweetsAcum[] = $tweet;
+                    }
+                }else{
+                     $tweetsAcum[] = $tweet;
+                }
+
+                $cont = $cont + 1;
+            }
+            $cantidadActual = $cantidadActual + count($tweets);
+           
+            if (count($tweetsAcum) != 0) {
+                
+                $max_id = $tweetsAcum[count($tweetsAcum)-1]->id_str;
+            }
+            else {
+               // break;
+            }
+
+            
+
+        } 
+
+       $tweets = $tweetsAcum;
+        //conectar con mongo
+        $client = new \MongoDB\Client("mongodb://localhost:27017");
+
+        $collection = $client->crm->tweets;
+        foreach($tweets as &$tweet) {
+            $date = new \DateTime($tweet->created_at);
+            //$date = $date->format(\DateTime::ISO8601);
+           
+            $time = $date->getTimestamp();
+            //$time = strval($time) + "000";
+            $time = $time."000";
+             
+            $utcdatetime = new \MongoDB\BSON\UTCDateTime($time);
+           
+           
+            $tweet->created_at = $utcdatetime;
+           
+        }
+        
+        //guardar los tweets
+        $result = $collection->insertMany($tweets);
+        $this->addFlash(
+            'success',
+            'Se han guardado 1500 tweets de '.$cliente
+            );
+    }
+
+    private function getTwitterId($usuario) {
+        $sql = " 
+            SELECT u.twitter_id
+            FROM usuario u
+            WHERE u.id = ?
+            ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $usuario->getId());
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+         return $res[0]["twitter_id"];
+    }
+    private function getTwitterToken($usuario) {
+        $sql = " 
+            SELECT u.twitter_token
+            FROM usuario u
+            WHERE u.id = ?
+            ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $usuario->getId());
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+       
+         return $res[0]["twitter_token"];
+    }
+    private function getTitterSecretToken($usuario) {
+        $sql = " 
+            SELECT u.twitter_secret_token
+            FROM usuario u
+            WHERE u.id = ?
+            ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $usuario->getId());
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+       
+         return $res[0]["twitter_secret_token"];
+    }
+    
 }
