@@ -53,7 +53,9 @@
                 <td>{{ entity[10] }}</td>
             </tr>
             <tr>
-                <th>Correos</th>
+
+            <th>Correos</th>
+             {% if entity[11] is defined %}
                 <td>
                     <ul>
                         {% for correo in entity[11] %}
@@ -62,9 +64,13 @@
                         {% endfor %}
                     </ul>
                 </td>
+                {% else %}
+                <td></td>
+                {% endif %}
             </tr>
             <tr>
                 <th>Direcciones</th>
+                {% if entity[12] is defined %}
                  <td>
                     <ul>
                         {% for correo in entity[12] %}
@@ -73,9 +79,13 @@
                         {% endfor %}
                     </ul>
                 </td>
+                {% else %}
+                <td></td>
+                {% endif %}
             </tr>
             <tr>
                 <th>Telefonos</th>
+                {% if entity[13] is defined %}
                  <td>
                     <ul>
                         {% for correo in entity[13] %}
@@ -84,14 +94,26 @@
                         {% endfor %}
                     </ul>
                 </td>
+                {% else %}
+                <td></td>
+                {% endif %}
             </tr>
             <tr>
                 <th>Tipo Membresia</th>
-                <td>{{ entity[14] }}</td>
+                {% if entity[14] is defined %}
+                    <td>{{ entity[14] }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
             </tr>
              <tr>
                 <th>Ingresado Por</th>
-                <td>{{ entity[15] }}</td>
+                {% if entity[15] is defined %}
+                     <td>{{ entity[15] }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+               
             </tr>
         </tbody>
     </table>
@@ -103,7 +125,9 @@
         </a>
     </li>
     <li>
-        
+          <a class="btn btn-danger" href="{{ path('client_edit', { 'id': entity[0] }) }}">
+            Editar
+        </a>
     </li>
     
 </ul>
