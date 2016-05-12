@@ -143,13 +143,13 @@ class ClientController extends Controller
                 $entity[] = $membresia[0]["tipo_membresia"];
             }
             else{
-                $entity[] = [];
+                $entity[] = null;
             }
             if ($usuario) {
                 $entity[] = $usuario[0]["username"];
             }
             else{
-                $entity[] = [];
+                $entity[] = null;
             }
        
         
@@ -283,13 +283,13 @@ class ClientController extends Controller
                     $entity[] = $membresia[0]["tipo_membresia"];
                 }
                 else{
-                    $entity[] = [];
+                    $entity[] = null;
                 }
                 if ($usuario) {
                     $entity[] = $usuario[0]["username"];
                 }
                  else{
-                    $entity[] = [];
+                    $entity[] = null;
                 }
             $returnArray[] = $entity;
                 
