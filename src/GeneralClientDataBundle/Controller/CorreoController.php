@@ -61,7 +61,7 @@ class CorreoController extends Controller
     public function newAction(Request $request)
     {
         $entity = new Correo();
-        $form   = $this->createForm(new CorreoType(), $entity);
+        $form   = $this->createForm(new CorreoType($this->getDoctrine()->getManager(), true), $entity);
         $form->handleRequest($request);
         if (!$form->isValid()){
             return $this->render('GeneralClientDataBundle:Correo:newCorreo.html.twig',
@@ -159,6 +159,7 @@ class CorreoController extends Controller
             $correo = new Correo();
             $correo->setId($entity["id"]);
             $correo->setCorreoElectronico($entity["correo_electronico"]);
+            $correo->setCliente($entity["cliente_id"]);
            // $correo->setCliente($entity["cliente_id"]);
             $entities[] = $correo;
 
@@ -191,7 +192,7 @@ class CorreoController extends Controller
     */
     private function createEditForm(Correo $entity)
     {
-        $form = $this->createForm(new CorreoType(), $entity, array(
+        $form = $this->createForm(new CorreoType($this->getDoctrine()->getManager()), $entity, array(
             'action' => $this->generateUrl('correo_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));

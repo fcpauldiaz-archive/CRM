@@ -21,7 +21,19 @@ class Telefono
     {
         return $this->id;
     }
+    /**
+     * Set setId
+     *
+     * @param string $id
+     *
+     * @return Telefono
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
 
+        return $this;
+    }
     /**
      * Set numeroTelefono
      *
@@ -46,7 +58,7 @@ class Telefono
         return $this->numeroTelefono;
     }
 
-    public function setCliente(ClienteEntity $cliente)
+    public function setCliente($cliente)
     {
         $this->cliente = $cliente;
 
