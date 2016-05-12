@@ -4,4 +4,5 @@ CREATE TABLE producto
   id integer NOT NULL,
   producto TEXT ,
   CONSTRAINT producto_id PRIMARY KEY (id)
-)
+);
+CREATE INDEX IDX_CLIENT_ID ON producto (id);

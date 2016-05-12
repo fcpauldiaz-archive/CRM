@@ -9,16 +9,28 @@
                 <th>Id</th>
                 <td>{{ entity.0.id }}</td>
             </tr>
+             <tr>
+                <th>Producto</th>
+                <td>{{ producto}}</td>
+            </tr>
+             <tr>
+                <th>Cantidad</th>
+                <td>{{ entity.0.cantidad }}</td>
+            </tr>
             <tr>
                 <th>Total de venta</th>
                 <td>{{ entity.0.total }}</td>
+            </tr>
+              <tr>
+                <th>Cliente</th>
+                <td>{{ cliente}}</td>
             </tr>
         </tbody>
     </table>
 
         <ul class="record_actions">
     <li>
-        <a class="btn btn-primary "href="{{ path('venta') }}">
+        <a class="btn btn-primary "href="{{ path('ventas') }}">
             Ver todos
         </a>
     </li>
