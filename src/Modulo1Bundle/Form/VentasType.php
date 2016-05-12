@@ -103,6 +103,10 @@ class VentasType extends AbstractType
             'label' => 'Cantidad',
             'required' => true,
         ])
+        ->add('fecha', 'date', [
+            'label' => 'Fecha de venta',
+            'required' => true,
+        ])
         ->add('total', 'number', [
             'label' => 'Total',
             'required' => true,

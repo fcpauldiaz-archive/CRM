@@ -377,7 +377,7 @@ class Client
         return $this->nacionalidad;
     }
 
-    public function setTipoMembresia(TipoMembresiaEntity $tipoMembresia)
+    public function setTipoMembresia($tipoMembresia)
     {
         $this->tipoMembresia = $tipoMembresia;
 
@@ -431,6 +431,15 @@ class Client
     public function getDireccion()
     {
         return $this->direccion;
+    }
+
+    public function getUpdateTweets()
+    {
+        return ;
+    }
+    public function setUpdateTweets($tweet)
+    {
+        return;
     }
     
 }

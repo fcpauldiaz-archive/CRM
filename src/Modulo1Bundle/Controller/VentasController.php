@@ -60,15 +60,16 @@ class VentasController extends Controller
         }
         $sql = " 
             INSERT INTO ventas
-            VALUES (nextval('ventas_id_seq'), ?, ?,?,?)
+            VALUES (nextval('ventas_id_seq'), ?,?,?,?, ?)
             ";
-
+        $fecha = $form->getData()['fecha'];
         $em = $this->getDoctrine()->getManager();
         $stmt = $em->getConnection()->prepare($sql);
         $stmt->bindValue(1, $form->getData()['producto']);
         $stmt->bindValue(2, $form->getData()['cantidad']);
         $stmt->bindValue(3, $form->getData()['total']);
         $stmt->bindValue(4, $form->getData()['cliente']);
+        $stmt->bindValue(5, $fecha, 'datetime');
         $stmt->execute();
         $res = $stmt->fetchAll();
         $sql = " 
@@ -101,10 +102,34 @@ class VentasController extends Controller
         $stmt->bindValue(1, $id);
         $stmt->execute();
         $res = $stmt->fetchAll();
+       
+          $sql = " 
+            SELECT  producto
+            FROM producto
+            WHERE id = ?
+            ";
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $res[0]["producto_id"]);
+        $stmt->execute();
+        $producto = $stmt->fetchAll()[0]["producto"];
+
+          $sql = " 
+            SELECT  nombres, apellidos
+            FROM client
+            WHERE id = ?
+            ";
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $res[0]["client_id"]);
+        $stmt->execute();
+        $cliente = $stmt->fetchAll();
+        $cliente = $cliente[0]["nombres"].' '.$cliente[0][
+        "apellidos"];
 
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
+            'producto' => $producto,
+            'cliente' => $cliente,
             'entity'      => $res,
             'delete_form' => $deleteForm->createView(),
         );
@@ -139,6 +164,7 @@ class VentasController extends Controller
             $ventas->setCliente($entity["cliente_id"]);
             $ventas->setTotal($entity["total"]);
             $ventas->setCantidad($entity["cantidad"]);
+            $ventas->setFecha( new \DateTime($entity["fecha"]));
            // $correo->setCliente($entity["cliente_id"]);
             $entities[] = $ventas;
 
@@ -204,6 +230,7 @@ class VentasController extends Controller
             $ventas->setCliente($entity["cliente_id"]);
             $ventas->setTotal($entity["total"]);
             $ventas->setCantidad($entity["cantidad"]);
+            $ventas->setFecha(new \DateTime($entity["fecha"]));
            // $correo->setCliente($entity["cliente_id"]);
             $entities[] = $ventas;
 
@@ -226,11 +253,12 @@ class VentasController extends Controller
             $cantidad = $data['cantidad'];
             $total = $data['total'];
             $cliente = $data['cliente'];
+            $fecha = $data['fecha'];
            
             $em = $this->getDoctrine()->getManager();
             $sql = " 
                 UPDATE  ventas
-                SET producto =?,cantidad = ?,total = ?, cliente = ?
+                SET producto =?,cantidad = ?,total = ?, cliente = ?, fecha = ?
                 Where id = ?
                 ";
 
@@ -240,7 +268,8 @@ class VentasController extends Controller
             $stmt->bindValue(2, $cantidad);
             $stmt->bindValue(3, $total);
             $stmt->bindValue(4, $cliente);
-            $stmt->bindValue(5, $id);
+            $stmt->bindValue(5, $fecha, 'datetime');
+            $stmt->bindValue(6, $id);
             $stmt->execute();
            
             return $this->redirect($this->generateUrl('venta_edit', array('id' => $id)));

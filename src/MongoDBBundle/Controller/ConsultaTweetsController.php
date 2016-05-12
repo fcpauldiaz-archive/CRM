@@ -36,7 +36,7 @@ class ConsultaTweetsController extends Controller
         $imagen = $data['imagen'];
         $estadisticas = $data['estadisticas'];
         $texto = $data['texto'];
-        
+        $mult = false;
       
       	$filter = [];
       	$filterUsuario = [];
@@ -85,6 +85,7 @@ class ConsultaTweetsController extends Controller
         			'$exists' => true
         		]
         	];
+          $mult = true;
         }
         if (isset($texto)) {
           $filterTexto = [
@@ -111,8 +112,9 @@ class ConsultaTweetsController extends Controller
 		 return $this->render(
                 'MongoDBBundle:Default:consultaTweets.html.twig',
                 [
+                  'multimedia' => $mult,
                 	'tweets' => $tweets,
-                    'form' => $form->createView(),
+                  'form' => $form->createView(),
                 ]
             );
 		

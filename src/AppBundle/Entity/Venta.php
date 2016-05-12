@@ -17,6 +17,8 @@ class Venta
 
     private $total;
 
+    private $fecha;
+
     public function setId($id)
     {
         $this->id = $id;
@@ -103,5 +105,16 @@ class Venta
     {
         return $this->total;
     }
+
+    public function getFecha()
+    {
+        return $this->fecha;
+    }
+
+    public function setFecha($fecha)
+    {
+        $this->fecha = $fecha;
+    }
 }
+
 

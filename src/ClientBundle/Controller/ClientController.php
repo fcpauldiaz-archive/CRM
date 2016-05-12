@@ -37,7 +37,7 @@ class ClientController extends Controller
         $entity = [];
         $id = $cliente["id"];
         $membresia_id = $cliente["tipo_membresia_id"];
-        dump($id);
+       
         $sqlCorreo = " 
             SELECT  correo_electronico 
             FROM correo
@@ -113,6 +113,9 @@ class ClientController extends Controller
                 }
                 $entity[] = $corr;
             }
+            else{
+                $entity[] = [];
+            }
             if ($direcciones) {
                 $dirs = [];
                 foreach($direcciones as $adress) {
@@ -120,6 +123,10 @@ class ClientController extends Controller
                 }
                 $entity[] = $dirs;
             }
+             else{
+                $entity[] = [];
+            }
+
             if ($telefonos) {
                 $tels = [];
                 foreach($telefonos as $telefono) {
@@ -127,13 +134,22 @@ class ClientController extends Controller
                 }
                 $entity[] = $tels;
             }
+            else{
+                $entity[] = [];
+            }
             if ($membresia) {
                 $entity[] = $membresia[0]["tipo_membresia"];
+            }
+            else{
+                $entity[] = [];
             }
             if ($usuario) {
                 $entity[] = $usuario[0]["username"];
             }
-
+            else{
+                $entity[] = [];
+            }
+       
         
         return $this->render('ClientBundle:Client:showClient.html.twig', [
             'entity' => $entity,
@@ -237,6 +253,9 @@ class ClientController extends Controller
                     }
                     $entity[] = $corr;
                 }
+                else{
+                    $entity[] = [];
+                }
                 if ($direcciones) {
                     $dirs = [];
                     foreach($direcciones as $adress) {
@@ -244,6 +263,10 @@ class ClientController extends Controller
                     }
                     $entity[] = $dirs;
                 }
+                else{
+                    $entity[] = [];
+                }
+
                 if ($telefonos) {
                     $tels = [];
                     foreach($telefonos as $telefono) {
@@ -251,11 +274,20 @@ class ClientController extends Controller
                     }
                     $entity[] = $tels;
                 }
+                else{
+                    $entity[] = [];
+                }
                 if ($membresia) {
                     $entity[] = $membresia[0]["tipo_membresia"];
                 }
+                else{
+                    $entity[] = [];
+                }
                 if ($usuario) {
                     $entity[] = $usuario[0]["username"];
+                }
+                 else{
+                    $entity[] = [];
                 }
             $returnArray[] = $entity;
                 
@@ -579,6 +611,7 @@ class ClientController extends Controller
             $client->setNacionalidad($entity["nacionalidad"]);
             $client->setTwitterUsername($entity["twitter_username"]);
             $client->setFotoCliente($entity["foto_cliente"]);
+            $client->setTipoMembresia($entity["tipo_membresia_id"]);
             $entities[] = $client;
 
         }
