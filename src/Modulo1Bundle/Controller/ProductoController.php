@@ -7,52 +7,51 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use GeneralClientDataBundle\Entity\Direccion;
-use Modulo1Bundle\Form\DireccionType;
+use AppBundle\Entity\Producto;
+use Modulo1Bundle\Form\ProductoType;
 /**
- * Direccion controller.
+ * Producto controller.
  *
- * @Route("/direccion")
+ * @Route("/producto")
  */
-class DireccionController extends Controller
+class ProductoController extends Controller
 {
-   /**
-     * Lists all direccion entities.
+	/**
+     * Lists all producto entities.
      *
-     * @Route("/", name="direccion")
+     * @Route("/", name="producto")
      * @Method("GET")
      */
     public function indexAction()
     {
          $sql = " 
             SELECT  *
-            FROM direccion
+            FROM producto
             ";
 
         $em = $this->getDoctrine()->getManager();
         $stmt = $em->getConnection()->prepare($sql);
         $stmt->execute();
         $res = $stmt->fetchAll();
-        return $this->render('Modulo1Bundle:Direccion:indexDirecciones.html.twig',
+        return $this->render('Modulo1Bundle:Producto:indexProducto.html.twig',
              array(
             'entities' => $res,
         ));
     }
-
-   	 /**
-     * Displays a form to create a new Direccion entity.
+    /**
+     * Displays a form to create a new Producto entity.
      *
-     * @Route("/new", name="direccion_new")
+     * @Route("/new", name="producto_new")
      * 
      * 
      */
     public function newAction(Request $request)
     {
-        $entity = new Direccion();
-        $form   =  $this->createForm(new DireccionType($this->getDoctrine()->getManager()));
+        $entity = new Producto();
+        $form   =  $this->createForm(new ProductoType(), $entity);
         $form->handleRequest($request);
         if (!$form->isValid()){
-            return $this->render('Modulo1Bundle:Direccion:newDireccion.html.twig',
+            return $this->render('Modulo1Bundle:Producto:newProducto.html.twig',
                  [
                     'entity' => $entity,
                     'form'   => $form->createView(),
@@ -60,39 +59,37 @@ class DireccionController extends Controller
             );
         }
         $sql = " 
-            INSERT INTO direccion
-            VALUES (nextval('direccion_id_seq'), ?, ?)
+            INSERT INTO producto
+            VALUES (nextval('direccion_id_seq'), ?)
             ";
 
         $em = $this->getDoctrine()->getManager();
         $stmt = $em->getConnection()->prepare($sql);
-        $stmt->bindValue(1, $form->getData()['direccion']);
-        $stmt->bindValue(2, $form->getData()['cliente']);
+        $stmt->bindValue(1, $form->getData()->getProducto());
         $stmt->execute();
         $res = $stmt->fetchAll();
         $sql = " 
             Select currval('direccion_id_seq')
-            FROM direccion
+            FROM producto
             LIMIT 1;
             ";
         $stmt = $em->getConnection()->prepare($sql);
         $stmt->execute();
         $res = $stmt->fetchAll();
-        return $this->redirect($this->generateUrl('direccion_show', array('id' => $res[0]["currval"])));
+        return $this->redirect($this->generateUrl('producto_show', array('id' => $res[0]["currval"])));
     }
-
     /**
-     * Finds and displays a Direccion entity.
+     * Finds and displays a Producto entity.
      *
-     * @Route("/{id}", name="direccion_show")
+     * @Route("/{id}", name="producto_show")
      * @Method("GET")
-     * @Template("Modulo1Bundle:Direccion:showDireccion.html.twig")
+     * @Template("Modulo1Bundle:Producto:showProducto.html.twig")
      */
     public function showAction($id)
     {
          $sql = " 
             SELECT  *
-            FROM direccion
+            FROM producto
             WHERE id = ?
             ";
 
@@ -110,9 +107,9 @@ class DireccionController extends Controller
         );
     }
      /**
-     * Displays a form to edit an existing Direccion entity.
+     * Displays a form to edit an existing Producto entity.
      *
-     * @Route("/{id}/edit", name="direccion_edit")
+     * @Route("/{id}/edit", name="producto_edit")
      * @Method("GET")
      *
      */
@@ -122,7 +119,7 @@ class DireccionController extends Controller
 
         $sql = " 
             SELECT  *
-            FROM direccion
+            FROM producto
             Where id = ?
             ";
 
@@ -133,12 +130,10 @@ class DireccionController extends Controller
         $res = $stmt->fetchAll();
         $entities = [];
         foreach($res as $entity){
-            $direccion = new Direccion();
-            $direccion->setId($entity["id"]);
-            $direccion->setDireccion($entity["direccion"]);
-            $direccion->setCliente($entity["cliente_id"]);
-           // $correo->setCliente($entity["cliente_id"]);
-            $entities[] = $direccion;
+            $producto = new Producto();
+            $producto->setId($entity["id"]);
+            $producto->setProducto($entity["producto"]);
+            $entities[] = $producto;
 
         }
         $entity = $entities[0];
@@ -147,7 +142,7 @@ class DireccionController extends Controller
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        return $this->render('Modulo1Bundle:Direccion:editDireccion.html.twig', 
+        return $this->render('Modulo1Bundle:Producto:editProducto.html.twig', 
             [
               'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
@@ -156,17 +151,17 @@ class DireccionController extends Controller
             ]);
        
     }
-    /**
+     /**
     * Creates a form to edit a Direccion entity.
     *
     * @param Direccion $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(Direccion $entity)
+    private function createEditForm(Producto $entity)
     {
-        $form = $this->createForm(new DireccionType($this->getDoctrine()->getManager()), $entity, array(
-            'action' => $this->generateUrl('direccion_update', array('id' => $entity->getId())),
+        $form = $this->createForm(new ProductoType($this->getDoctrine()->getManager()), $entity, array(
+            'action' => $this->generateUrl('producto_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -177,15 +172,15 @@ class DireccionController extends Controller
     /**
      * Edits an existing Correo entity.
      *
-     * @Route("/{id}", name="direccion_update")
+     * @Route("/{id}", name="producto_update")
      * @Method("PUT")
-     * @Template("Modulo1Bundle:direccion:editDireccion.html.twig")
+     * @Template("Modulo1Bundle:Producto:editProducto.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
         $sql = " 
             SELECT  *
-            FROM direccion
+            FROM producto
             Where id = ?
             ";
 
@@ -196,18 +191,17 @@ class DireccionController extends Controller
         $res = $stmt->fetchAll();
         $entities = [];
         foreach($res as $entity){
-            $direccion = new Direccion();
-            $direccion->setId($entity["id"]);
-            $direccion->setDireccion($entity["direccion"]);
-           // $correo->setCliente($entity["cliente_id"]);
-            $entities[] = $direccion;
+            $producto = new Producto();
+            $producto->setId($entity["id"]);
+            $producto->setProducto($entity["producto"]);
+            $entities[] = $producto;
 
         }
         $entity = $entities[0];
        
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Correo entity.');
+            throw $this->createNotFoundException('Unable to find Producto entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -216,22 +210,22 @@ class DireccionController extends Controller
 
         if ($editForm->isValid()) {
 
-             $direccion = $request->request->get('direccion')['direccion'];
+             $producto = $request->request->get('producto')['producto'];
            
             $em = $this->getDoctrine()->getManager();
             $sql = " 
-                UPDATE  direccion
-                SET direccion = ?
+                UPDATE  producto
+                SET producto = ?
                 Where id = ?
                 ";
 
             $em = $this->getDoctrine()->getManager();
             $stmt = $em->getConnection()->prepare($sql);
-            $stmt->bindValue(1, $direccion);
+            $stmt->bindValue(1, $producto);
             $stmt->bindValue(2, $id);
             $stmt->execute();
            
-            return $this->redirect($this->generateUrl('direccion_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('producto_edit', array('id' => $id)));
         }
 
         return array(
@@ -241,9 +235,9 @@ class DireccionController extends Controller
         );
     }
     /**
-     * Deletes a direccion entity.
+     * Deletes a producto entity.
      *
-     * @Route("/{id}", name="direccion_delete")
+     * @Route("/{id}", name="producto_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -253,7 +247,7 @@ class DireccionController extends Controller
 ;
         if ($form->isValid()) {
             $sql = " 
-                DELETE FROM direccion
+                DELETE FROM producto
                 WHERE id = ?
                 ";
 
@@ -263,7 +257,7 @@ class DireccionController extends Controller
             $stmt->execute();
         }
 
-        return $this->redirect($this->generateUrl('direccion'));
+        return $this->redirect($this->generateUrl('producto'));
     }
      /**
      * Creates a form to delete a Direccion entity by id.
@@ -275,7 +269,7 @@ class DireccionController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('direccion_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('producto_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Eliminar','attr' => ['class' => 'btn btn-danger']))
             ->getForm()

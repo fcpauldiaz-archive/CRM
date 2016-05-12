@@ -9,4 +9,7 @@ CREATE TABLE ventas
   CONSTRAINT producto_id FOREIGN KEY (producto_id)
       REFERENCES producto (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT client_id FOREIGN KEY (client_id)
+      REFERENCES client (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
 )
