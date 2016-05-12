@@ -12,7 +12,7 @@ CREATE TABLE client (
     profesion VARCHAR(255) DEFAULT NULL,
     dpi VARCHAR(14) DEFAULT NULL,
     nacionalidad VARCHAR(255) DEFAULT NULL,
-    twitter_username VARCHAR(25) DEFAULT NULL,
+    twitter_username TEXT DEFAULT NULL,
     PRIMARY KEY(id)
 );
 

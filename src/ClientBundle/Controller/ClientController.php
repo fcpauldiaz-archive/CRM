@@ -18,6 +18,26 @@ use ClientBundle\Form\ClientType;
 class ClientController extends Controller
 {
     /**
+     * @Route("/{id}", name="cliente_show")
+     */
+    public function showAction($id) 
+    {
+         $sql = " 
+            SELECT  *
+            FROM client
+            WHERE id = ?
+            ";
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+
+        dump($res);
+        die();
+    }
+
+    /**
      * @Route("/", name="cliente")
      */
     public function indexAction(Request $request)
@@ -361,4 +381,193 @@ class ClientController extends Controller
 
         return $returnTipo;
     }
+
+    /**
+     * Displays a form to edit an existing client entity.
+     *
+     * @Route("/{id}/edit", name="client_edit")
+     * @Method("GET")
+     *
+     */
+    public function editAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $sql = " 
+            SELECT  *
+            FROM client
+            Where id = ?
+            ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+        $entities = [];
+        foreach($res as $entity){
+            $client = new Client();
+            $client->setId($entity["id"]);
+            $client->setFechaNacimiento($entity["fecha_nacimiento"]);
+            $client->setNit($entity["nit"]);
+            $client->setFrecuente($entity["frecuente"]);
+            $client->setNombres($entity["nombres"]);
+            $client->setApellidos($entity["apellidos"]);
+            $client->setEstadoCivil($entity["estado_civil"]);
+            $client->setSexo($entity["sexo"]);
+            $client->setProfesion($entity["profesion"]);
+            $client->setDpi($entity["dpi"]);
+            $client->setNacionalidad($entity["nacionalidad"]);
+            $client->setTwitterUsername($entity["twitter_username"]);
+            $client->setImageFile($entity["foto_cliente"]);
+            $entities[] = $client;
+
+        }
+        $entity = $entities[0];
+       
+
+        $editForm = $this->createEditForm($entity);
+        $deleteForm = $this->createDeleteForm($id);
+
+        return $this->render('ClientBundle:Client:editClient.html.twig', 
+            [
+              'entity'      => $entity,
+            'edit_form'   => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+
+            ]);
+       
+    }
+    
+    /**
+     * Edits an existing client entity.
+     *
+     * @Route("/{id}", name="client_update")
+     * @Method("PUT")
+     * @Template("ClientBundle:Client:editClient.html.twig")
+     */
+    public function updateAction(Request $request, $id)
+    {
+        $sql = " 
+            SELECT  *
+            FROM client
+            Where id = ?
+            ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->bindValue(1, $id);
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+        $entities = [];
+        foreach($res as $entity){
+            $client = new Client();
+            $client->setId($entity["id"]);
+            $client->setFechaNacimiento($entity["fecha_nacimiento"]);
+            $client->setNit($entity["nit"]);
+            $client->setFrecuente($entity["frecuente"]);
+            $client->setNombres($entity["nombres"]);
+            $client->setApellidos($entity["apellidos"]);
+            $client->setEstadoCivil($entity["estado_civil"]);
+            $client->setSexo($entity["sexo"]);
+            $client->setProfesion($entity["profesion"]);
+            $client->setDpi($entity["dpi"]);
+            $client->setNacionalidad($entity["nacionalidad"]);
+            $client->setTwitterUsername($entity["twitter_username"]);
+            $client->setImageFile($entity["foto_cliente"]);
+            $entities[] = $client;
+
+        }
+        $entity = $entities[0];
+       
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Correo entity.');
+        }
+
+        $deleteForm = $this->createDeleteForm($id);
+        $editForm = $this->createEditForm($entity);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isValid()) {
+
+            $data = $editForm->getData();
+            $fechaNacimiento = $data['fechaNacimiento'];
+            $nit = $data['nit'];
+            $frecuente = $data['frecuente'];
+            $nombres = $data['nombres'];
+            $apellidos = $data['apellidos'];
+            $estadoCivil = $data['estadoCivil'];
+            $sexo = $data['sexo'];
+            $profesion = $data['profesion'];
+            $dpi = $data['dpi'];
+            $nacionalidad = $data['nacionalidad'];
+            $twitterUsername = $data['twitterUsername'];
+            $imagen = $data['imageFile'];
+           
+            $em = $this->getDoctrine()->getManager();
+            $sql = " 
+                UPDATE  client
+                SET fecha_nacimiento = ?,
+                nit = ?,
+                frecuente = ?,
+                nombres = ?,
+                apellidos = ?,
+                estado_civil = ?,
+                foto_cliente = ?,
+                sexo = ?,
+                profesion = ?,
+                dpi = ?
+                nacionalidad = ?,
+                twitter_username = ?,
+                Where id = ?
+                ";
+
+            $em = $this->getDoctrine()->getManager();
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->bindValue(1, $fechaNacimiento);
+            $stmt->bindValue(2, $nit);
+            $stmt->bindValue(3, $frecuente);
+            $stmt->bindValue(4, $nombres);
+            $stmt->bindValue(5, $apellidos);
+            $stmt->bindValue(6, $estadoCivil);
+            $stmt->bindValue(7, $imagen);
+            $stmt->bindValue(8, $sexo);
+            $stmt->bindValue(9, $profesion);
+            $stmt->bindValue(10, $dpi);
+            $stmt->bindValue(11, $nacionalidad);
+            $stmt->bindValue(12, $twitterUsername);
+            $stmt->bindValue(13, $id);
+            $stmt->execute();
+           
+            return $this->redirect($this->generateUrl('client_edit', array('id' => $id)));
+        }
+         return array(
+            'entity'      => $entity,
+            'edit_form'   => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+        );
+    }
+
+     /**
+    * Creates a form to edit a Direccion entity.
+    *
+    * @param Client $entity The entity
+    *
+    * @return \Symfony\Component\Form\Form The form
+    */
+    private function createEditForm(Client $entity)
+    {
+        $form = $this->createForm(new ClientType($this->getDoctrine()->getManager()), $entity, array(
+            'action' => $this->generateUrl('client_update', array('id' => $entity->getId())),
+            'method' => 'PUT',
+        ));
+
+        $form->add('submit', 'submit', array('label' => 'Actualizar', 'attr' => ['class' => 'btn btn-primary']));
+
+        return $form;
+    }
+
+
+
 }

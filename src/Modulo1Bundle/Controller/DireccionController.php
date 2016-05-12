@@ -136,6 +136,7 @@ class DireccionController extends Controller
             $direccion = new Direccion();
             $direccion->setId($entity["id"]);
             $direccion->setDireccion($entity["direccion"]);
+            $direccion->setCliente($entity["cliente_id"]);
            // $correo->setCliente($entity["cliente_id"]);
             $entities[] = $direccion;
 

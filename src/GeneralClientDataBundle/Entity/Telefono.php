@@ -58,7 +58,7 @@ class Telefono
         return $this->numeroTelefono;
     }
 
-    public function setCliente(ClienteEntity $cliente)
+    public function setCliente($cliente)
     {
         $this->cliente = $cliente;
 

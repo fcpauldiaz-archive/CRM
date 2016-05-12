@@ -1,6 +1,6 @@
 <?php
 
-namespace Modulo1Bundle\Form;
+namespace GeneralClientDataBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -8,12 +8,15 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityManager;
 use ClientBundle\Entity\Client;
 
-class DireccionType extends AbstractType
+class CorreoType extends AbstractType
 {
    
     private $collection;
-    public function __construct(EntityManager $entityManager)
+    private $tipo;//sirve para diferenciar entre editar y crear
+
+    public function __construct(EntityManager $entityManager, $type = false)
     {
+        $this->tipo = $type;
         $this->collection = [];
         $em = $entityManager;
         $sql = " 
@@ -37,19 +40,35 @@ class DireccionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if ($this->tipo){
+            $builder
+                ->add('cliente', 'choice', [
+                        'choices' => $this->collection,
+                        'label' => false,
+                        'empty_value' => 'Escoja un cliente',
+                        'required' => false,
+                        'attr' => [
+                            'class' => 'select2'
+                        ],
+                       
+                ]);
+        }
+        if (!$this->tipo) {
+            $builder
+                ->add('cliente', 'choice', [
+                        'choices' => $this->collection,
+                        'label' => false,
+                        'empty_value' => 'Escoja un cliente',
+                        'required' => false,
+                        'attr' => [
+                            'class' => 'select2'
+                        ],
+                        'disabled' => true,
+                ]);
+        }
         $builder
-        ->add('cliente', 'choice', [
-                'choices' => $this->collection,
-                'label' => false,
-                'empty_value' => 'Escoja un cliente',
-                'required' => false,
-                'attr' => [
-                    'class' => 'select2'
-                ],
-                'disabled' => true,
-        ])
-        ->add('direccion', 'text', [
-            'label' => 'Direccion',
+        ->add('correoElectronico', 'email', [
+            'label' => 'Correo Electrónico',
             'required' => true,
         ])
         ->add('submit', 'submit', [

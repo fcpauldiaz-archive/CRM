@@ -43,7 +43,8 @@ class TelefonoType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'select2'
-                ]
+                ],
+                'disabled' => true,
         ])
         ->add('numeroTelefono', 'text', [
             'label' => 'Telefono',

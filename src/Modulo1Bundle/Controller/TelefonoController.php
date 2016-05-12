@@ -134,6 +134,8 @@ class TelefonoController extends Controller
             $telefono = new Telefono();
             $telefono->setId($entity["id"]);
             $telefono->setNumeroTelefono($entity["numero_telefono"]);
+
+            $telefono->setCliente($entity["cliente_id"]);
            // $correo->setCliente($entity["cliente_id"]);
             $entities[] = $telefono;
 
@@ -196,7 +198,7 @@ class TelefonoController extends Controller
             $telefono = new Telefono();
             $telefono->setId($entity["id"]);
             $telefono->setNumeroTelefono($entity["numero_telefono"]);
-           // $correo->setCliente($entity["cliente_id"]);
+           // $telefono->setCliente($entity["cliente_id"]);
             $entities[] = $telefono;
 
         }
@@ -214,6 +216,7 @@ class TelefonoController extends Controller
         if ($editForm->isValid()) {
 
              $telefono = $request->request->get('numero_telefono')['numero_telefono'];
+          
            
             $em = $this->getDoctrine()->getManager();
             $sql = " 
@@ -224,7 +227,7 @@ class TelefonoController extends Controller
 
             $em = $this->getDoctrine()->getManager();
             $stmt = $em->getConnection()->prepare($sql);
-            $stmt->bindValue(1, $telefono);
+            $stmt->bindValue(1, $editForm->getData()->getNumeroTelefono());
             $stmt->bindValue(2, $id);
             $stmt->execute();
            
