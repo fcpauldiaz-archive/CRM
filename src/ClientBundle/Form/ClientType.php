@@ -49,6 +49,9 @@ class ClientType extends AbstractType
         ])
         ->add('nit', 'text', [
             'label' => 'Número de identificación Tributaria',
+            'attr' => [
+                'placeholder' => 'Sin guión'
+            ],
             'required' => true,
         ])
         ->add('dpi', 'text', [
@@ -166,6 +169,7 @@ class ClientType extends AbstractType
                     'class' => 'btn btn-primary btn-block',
                 ],
 
+
             ])
 
         ;
@@ -176,6 +180,7 @@ class ClientType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+       
     }
 
     /**

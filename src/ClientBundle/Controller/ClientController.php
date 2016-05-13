@@ -179,7 +179,7 @@ class ClientController extends Controller
             $entity = [];
             $id = $cliente["id"];
             $membresia_id = $cliente["tipo_membresia_id"];
-            dump($id);
+          
             $sqlCorreo = " 
                 SELECT  correo_electronico 
                 FROM correo
@@ -752,6 +752,7 @@ class ClientController extends Controller
         if ($editForm->isValid()) {
 
             $data = $editForm->getData();
+
             $fechaNacimiento = $data->getFechaNacimiento();
             $nit = $data->getNit();
             $frecuente = $data->getFrecuente();
@@ -828,7 +829,11 @@ class ClientController extends Controller
     */
     private function createEditForm(Client $entity)
     {
-        $form = $this->createForm(new ClientType($this->getDoctrine()->getManager()), $entity, array(
+        $form = $this->createForm(new ClientType($this->getDoctrine()->getManager(),
+           $this->getNombreTipoColumnas()
+
+            ), $entity, array(
+        
             'action' => $this->generateUrl('client_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
@@ -850,6 +855,17 @@ class ClientController extends Controller
         $form->handleRequest($request);
 ;
         if ($form->isValid()) {
+
+           $sql = " 
+                DELETE FROM valor_dinamico
+                WHERE cliente_id = ?
+                ";
+
+            $em = $this->getDoctrine()->getManager();
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->bindValue(1, $id);
+            $stmt->execute();
+
             $sql = " 
                 DELETE FROM client
                 WHERE id = ?
@@ -859,6 +875,8 @@ class ClientController extends Controller
             $stmt = $em->getConnection()->prepare($sql);
             $stmt->bindValue(1, $id);
             $stmt->execute();
+
+
         }
 
         return $this->redirect($this->generateUrl('cliente'));

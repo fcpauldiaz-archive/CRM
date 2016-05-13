@@ -86,8 +86,8 @@ create or replace function nit_limit()
 	if length(New.nit)>10 THEN
 		RAISE EXCEPTION 'Numero de nit debe ser menor a 10 digitos';
 	END IF;
-	if length(New.nit)<8 THEN
-		RAISE EXCEPTION 'Numero de nit debe ser mayor a 8 digitos';
+	if length(New.nit)<6 THEN
+		RAISE EXCEPTION 'Numero de nit debe ser mayor a 6 digitos';
 	END IF;
    Return NEW;
  END;

@@ -101,13 +101,13 @@ class UpdateTweetsController extends Controller
         while ($cantidadActual < $cantidadMax) {
             if ($cantidadActual !=0 ){
                 $tweets = $twitter->getTimeline(array(
-                    'count' => 500,
+                    'count' => 200,
                     'max_id' => $max_id,
                     'screen_name' => $this->getTwitterUsername($cliente)
                 ));
             }else{
                  $tweets = $twitter->getTimeline(array(
-                'count' => 500,
+                'count' => 200,
                 'screen_name' => $this->getTwitterUsername($cliente)
             ));
 

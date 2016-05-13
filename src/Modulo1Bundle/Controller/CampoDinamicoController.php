@@ -53,13 +53,12 @@ class CampoDinamicoController extends Controller
             $columnaDinamica = $stmt->fetchAll();
 
             if ($columnaDinamica) {
-                $this->get('braincrafted_bootstrap.flash')->error(
-                    sprintf(
-                        'Error: El campo %s ya existe',
-                        $formData['nombre']
-                    )
-                );
-
+                 $this->addFlash(
+                        'error',
+                         'Error: El campo '.$formData['nombre'].' ya existe'
+                       
+                    );
+                
                 return [
                     'form' => $form->createView()
                 ];
@@ -81,6 +80,7 @@ class CampoDinamicoController extends Controller
 
         } catch (Exception $e) {
             throw new \LogicException('Tipo de columna no reconocido');
+
         }
     }
 
