@@ -2,6 +2,10 @@
 
 {% block body -%}
     <h1>Reportes de detalle</h1>
+
+    {{ form(form)}}
+
+
     <h2>Cliente Membresia</h2>
     <table class="table table-striped table-hover">
         <thead>
@@ -16,11 +20,11 @@
         <tbody>
         {% for entity in cliente_membresia %}
             <tr>
-                <td>{{ entity.0 }}</td>
-                <td>{{ entity.1 }}</td>
-                <td>{{ entity.2 }}</td>
-                <td>{{ entity.3 }}</td>
-                <td>{{ entity.4 }}</td>
+                <td>{{ entity['id'] }}</td>
+                <td>{{ entity['nombres'] }}</td>
+                <td>{{ entity['apellidos'] }}</td>
+                <td>{{ entity['dpi'] }}</td>
+                <td>{{ entity['tipo_membresia'] }}</td>
             </tr>
         {% endfor %}
         </tbody>

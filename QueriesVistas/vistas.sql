@@ -40,8 +40,13 @@ group by producto.producto;
 --vista 1 bofo
 CREATE VIEW cliente_membresia AS
     SELECT c.id, c.nombres, c.apellidos, c.dpi, tp.tipo_membresia FROM client c
-    INNER JOIN tipo_membresia tp ON tp.id = c.tipo_membresia_id;
+    INNER JOIN tipo_membresia tp ON tp.id = c.tipo_membresia_id
 --vista 2 bofo
 CREATE VIEW venta_producto AS
 SELECT v.id, v.cantidad, v.total, v.fecha, p.producto FROM ventas v
-    INNER JOIN producto p ON p.id = v.producto_id;
+    INNER JOIN producto p ON p.id = v.producto_id
+    WHERE p.producto = 'lana'
+    and v.fecha >= '2011-01-01'
+    AND v.fecha <= '2020-01-01';
+
+

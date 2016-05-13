@@ -43,6 +43,9 @@ security:
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/cliente/, roles: ROLE_USER }
+        - { path: ^/producto/, roles: ROLE_USER }
+        - { path: ^/correo/, roles: ROLE_USER }
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER

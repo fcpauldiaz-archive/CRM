@@ -1,0 +1,46 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Búsqueda clientes</h1>
+
+    {{form(form)}}
+
+    
+    <table class="table table-striped table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>NIT</th>
+                <th>Frecuente</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Estado Civil</th>
+                <th>Sexo</th>
+                <th>Twitter Username</th>
+                <th>DPI</th>
+                <th>Nacionalidad</th>
+                <th>Twitter Username</th>
+                <th>Fecha Nacimiento</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for cliente in clientes %}
+            <tr>
+               <td>{{cliente["id"]}}</td>
+               <td>{{cliente["nit"]}}</td>
+               	<td>{{cliente["frecuente"]? 'Sí':'No'}}</td>
+               	<td>{{cliente["nombres"]}}</td>
+               	<td>{{cliente["apellidos"]}}</td>
+               	<td>{{cliente["estado_civil"]}}</td>
+               	<td>{{cliente["sexo"]}}</td>
+               	<td>{{cliente["profesion"]}}</td>
+               	<td>{{cliente["dpi"]}}</td>
+               	<td>{{cliente["nacionalidad"]}}</td>
+               	<td>{{cliente["twitter_username"]}}</td>   
+               	<td>{{cliente["fecha_nacimiento"]}}</td>  
+               
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
