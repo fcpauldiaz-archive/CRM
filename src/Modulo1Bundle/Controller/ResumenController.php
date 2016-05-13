@@ -71,6 +71,50 @@ class ResumenController extends Controller
             'total_por_cliente'=>$total_por_cliente,
 
         ));
+    }
+
+        /**
+     * Lists all direccion entities.
+     *
+     * @Route("/cliente_membresia", name="cliente_membresia_resumen")
+     * @Method("GET")
+     */
+    public function detalleAction()
+    {
+         $sql = " 
+           select * from cliente_membresia 
+            ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        $cliente_membresia = $stmt->fetchAll();
+        return $this->render('Modulo1Bundle:Resumen:clienteMembresiaResumen.html.twig',
+             array(
+            'cliente_membresia' => $cliente_membresia,
+        ));
+
+    }
+        /**
+     * Lists all direccion entities.
+     *
+     * @Route("/venta_producto", name="venta_producto_resumen")
+     * @Method("GET")
+     */
+    public function detalleProductoAction()
+    {
+         $sql = " 
+           select * from venta_producto 
+            ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        $venta_producto = $stmt->fetchAll();
+        return $this->render('Modulo1Bundle:Resumen:ventaProductoResumen.html.twig',
+             array(
+            'venta_producto' => $venta_producto,
+        ));
 
     }
 }

@@ -1,0 +1,30 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Reportes de detalle</h1>
+    <h2>Cliente Membresia</h2>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>DPI</th>
+                <th>Tipo Mempbresia</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in cliente_membresia %}
+            <tr>
+                <td>{{ entity.0 }}</td>
+                <td>{{ entity.1 }}</td>
+                <td>{{ entity.2 }}</td>
+                <td>{{ entity.3 }}</td>
+                <td>{{ entity.4 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+
+    {% endblock %}
